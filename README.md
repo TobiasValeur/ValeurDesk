@@ -1,4 +1,4 @@
-#Zendesk & Help Scout Alternative
+# Zendesk & Help Scout Alternative
 
 **ValeurDesk** is a fork of [**FreeScout**](https://www.freescout.net)
 
