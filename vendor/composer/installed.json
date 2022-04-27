@@ -51,6 +51,11 @@
                 "laravel",
                 "toolkit"
             ],
+            "support": {
+                "issues": "https://github.com/Anahkiasen/underscore-php/issues",
+                "source": "https://github.com/Anahkiasen/underscore-php/tree/develop"
+            },
+            "abandoned": true,
             "install-path": "../anahkiasen/underscore-php"
         },
         {
@@ -99,6 +104,10 @@
             ],
             "description": "Extend aaronlord/laroute package.",
             "homepage": "https://github.com/AXN-Informatique/laravel-laroute",
+            "support": {
+                "issues": "https://github.com/AXN-Informatique/laravel-laroute/issues",
+                "source": "https://github.com/AXN-Informatique/laravel-laroute/tree/master"
+            },
             "install-path": "../axn/laravel-laroute"
         },
         {
@@ -156,6 +165,10 @@
                 "translations",
                 "translator"
             ],
+            "support": {
+                "issues": "https://github.com/barryvdh/laravel-translation-manager/issues",
+                "source": "https://github.com/barryvdh/laravel-translation-manager/tree/master"
+            },
             "install-path": "../barryvdh/laravel-translation-manager"
         },
         {
@@ -219,6 +232,11 @@
                 "laravel",
                 "zip"
             ],
+            "support": {
+                "issues": "https://github.com/Chumper/Zipper/issues",
+                "source": "https://github.com/Chumper/Zipper/tree/master"
+            },
+            "abandoned": true,
             "install-path": "../chumper/zipper"
         },
         {
@@ -278,6 +296,10 @@
                 "self-update",
                 "update"
             ],
+            "support": {
+                "issues": "https://github.com/codedge/laravel-selfupdater/issues",
+                "source": "https://github.com/codedge/laravel-selfupdater"
+            },
             "install-path": "../codedge/laravel-selfupdater"
         },
         {
@@ -329,6 +351,10 @@
                 "laravel5",
                 "minify"
             ],
+            "support": {
+                "issues": "https://github.com/DevFactoryCH/minify/issues",
+                "source": "https://github.com/DevFactoryCH/minify/tree/master"
+            },
             "install-path": "../devfactory/minify"
         },
         {
@@ -365,6 +391,10 @@
                 "MIT"
             ],
             "description": "implementation of xdg base directory specification for php",
+            "support": {
+                "issues": "https://github.com/dnoegel/php-xdg-base-dir/issues",
+                "source": "https://github.com/dnoegel/php-xdg-base-dir/tree/v0.1.1"
+            },
             "install-path": "../dnoegel/php-xdg-base-dir"
         },
         {
@@ -438,6 +468,10 @@
                 "cache",
                 "caching"
             ],
+            "support": {
+                "issues": "https://github.com/doctrine/cache/issues",
+                "source": "https://github.com/doctrine/cache/tree/1.6.x"
+            },
             "install-path": "../doctrine/cache"
         },
         {
@@ -719,6 +753,9 @@
                 "singularize",
                 "string"
             ],
+            "support": {
+                "source": "https://github.com/doctrine/inflector/tree/master"
+            },
             "install-path": "../doctrine/inflector"
         },
         {
@@ -776,6 +813,9 @@
                 "lexer",
                 "parser"
             ],
+            "support": {
+                "source": "https://github.com/doctrine/lexer/tree/master"
+            },
             "install-path": "../doctrine/lexer"
         },
         {
@@ -837,6 +877,10 @@
                 "validation",
                 "validator"
             ],
+            "support": {
+                "issues": "https://github.com/egulias/EmailValidator/issues",
+                "source": "https://github.com/egulias/EmailValidator/tree/2.1.10"
+            },
             "install-path": "../egulias/email-validator"
         },
         {
@@ -886,6 +930,10 @@
                 "markdown",
                 "parser"
             ],
+            "support": {
+                "issues": "https://github.com/erusev/parsedown/issues",
+                "source": "https://github.com/erusev/parsedown/tree/master"
+            },
             "install-path": "../erusev/parsedown"
         },
         {
@@ -936,6 +984,10 @@
             "keywords": [
                 "html"
             ],
+            "support": {
+                "issues": "https://github.com/ezyang/htmlpurifier/issues",
+                "source": "https://github.com/ezyang/htmlpurifier/tree/master"
+            },
             "install-path": "../ezyang/htmlpurifier"
         },
         {
@@ -996,6 +1048,10 @@
                 "proxy",
                 "trusted proxy"
             ],
+            "support": {
+                "issues": "https://github.com/fideloper/TrustedProxy/issues",
+                "source": "https://github.com/fideloper/TrustedProxy/tree/master"
+            },
             "install-path": "../fideloper/proxy"
         },
         {
@@ -1064,21 +1120,25 @@
                 "rest",
                 "web service"
             ],
+            "support": {
+                "issues": "https://github.com/guzzle/guzzle/issues",
+                "source": "https://github.com/guzzle/guzzle/tree/master"
+            },
             "install-path": "../guzzlehttp/guzzle"
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.4.1",
-            "version_normalized": "1.4.1.0",
+            "version": "1.5.1",
+            "version_normalized": "1.5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d"
+                "reference": "fe752aedc9fd8fcca3fe7ad05d419d32998a06da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/8e7d04f1f6450fef59366c399cfad4b9383aa30d",
-                "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/fe752aedc9fd8fcca3fe7ad05d419d32998a06da",
+                "reference": "fe752aedc9fd8fcca3fe7ad05d419d32998a06da",
                 "shasum": ""
             },
             "require": {
@@ -1087,11 +1147,11 @@
             "require-dev": {
                 "symfony/phpunit-bridge": "^4.4 || ^5.1"
             },
-            "time": "2021-03-07T09:25:29+00:00",
+            "time": "2021-10-22T20:56:57+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "installation-source": "dist",
@@ -1109,9 +1169,24 @@
             ],
             "authors": [
                 {
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
+                },
+                {
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https://github.com/Nyholm"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "email": "webmaster@tubo-world.de",
+                    "homepage": "https://github.com/Tobion"
                 }
             ],
             "description": "Guzzle promises library",
@@ -1120,8 +1195,22 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/1.4.1"
+                "source": "https://github.com/guzzle/promises/tree/1.5.1"
             },
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/promises",
+                    "type": "tidelift"
+                }
+            ],
             "install-path": "../guzzlehttp/promises"
         },
         {
@@ -1158,12 +1247,12 @@
             },
             "installation-source": "dist",
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Psr7\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\Psr7\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1190,6 +1279,10 @@
                 "uri",
                 "url"
             ],
+            "support": {
+                "issues": "https://github.com/guzzle/psr7/issues",
+                "source": "https://github.com/guzzle/psr7/tree/1.4.2"
+            },
             "install-path": "../guzzlehttp/psr7"
         },
         {
@@ -1230,6 +1323,10 @@
                 "GPLv2"
             ],
             "description": "Converts HTML to formatted plain text",
+            "support": {
+                "issues": "https://github.com/mtibben/html2text/issues",
+                "source": "https://github.com/mtibben/html2text/tree/master"
+            },
             "install-path": "../html2text/html2text"
         },
         {
@@ -1275,6 +1372,11 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "support": {
+                "issues": "https://github.com/JakubOnderka/PHP-Console-Color/issues",
+                "source": "https://github.com/JakubOnderka/PHP-Console-Color/tree/master"
+            },
+            "abandoned": "php-parallel-lint/php-console-color",
             "install-path": "../jakub-onderka/php-console-color"
         },
         {
@@ -1324,6 +1426,11 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "support": {
+                "issues": "https://github.com/JakubOnderka/PHP-Console-Highlighter/issues",
+                "source": "https://github.com/JakubOnderka/PHP-Console-Highlighter/tree/master"
+            },
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "install-path": "../jakub-onderka/php-console-highlighter"
         },
         {
@@ -1374,56 +1481,11 @@
                 }
             ],
             "description": "A package for adding methods to Laravel models on the fly",
+            "support": {
+                "issues": "https://github.com/javoscript/laravel-macroable-models/issues",
+                "source": "https://github.com/javoscript/laravel-macroable-models/tree/1.0.4"
+            },
             "install-path": "../javoscript/laravel-macroable-models"
-        },
-        {
-            "name": "kitetail/zttp",
-            "version": "v0.4.0",
-            "version_normalized": "0.4.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/kitetail/zttp.git",
-                "reference": "3875188916c746ff1a3f2b1095564aca72d973b8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/kitetail/zttp/zipball/3875188916c746ff1a3f2b1095564aca72d973b8",
-                "reference": "3875188916c746ff1a3f2b1095564aca72d973b8",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.0",
-                "php": ">=7.0",
-                "tightenco/collect": "^5.4"
-            },
-            "require-dev": {
-                "laravel/lumen-framework": "5.5.*",
-                "phpunit/phpunit": "^6.0"
-            },
-            "time": "2018-03-11T19:39:08+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "files": [
-                    "src/Zttp.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Adam Wathan",
-                    "email": "adam.wathan@gmail.com"
-                }
-            ],
-            "description": "A developer-experience focused HTTP client, optimized for most common use cases.",
-            "keywords": [
-                "Guzzle",
-                "http"
-            ],
-            "install-path": "../kitetail/zttp"
         },
         {
             "name": "laravel/framework",
@@ -1560,6 +1622,10 @@
                 "framework",
                 "laravel"
             ],
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
             "install-path": "../laravel/framework"
         },
         {
@@ -1626,6 +1692,10 @@
                 "laravel",
                 "psysh"
             ],
+            "support": {
+                "issues": "https://github.com/laravel/tinker/issues",
+                "source": "https://github.com/laravel/tinker/tree/v1.0.7"
+            },
             "install-path": "../laravel/tinker"
         },
         {
@@ -1713,6 +1783,10 @@
                 "sftp",
                 "storage"
             ],
+            "support": {
+                "issues": "https://github.com/thephpleague/flysystem/issues",
+                "source": "https://github.com/thephpleague/flysystem/tree/master"
+            },
             "install-path": "../league/flysystem"
         },
         {
@@ -1767,6 +1841,10 @@
                 "routes",
                 "routing"
             ],
+            "support": {
+                "issues": "https://github.com/aaronlord/laroute/issues",
+                "source": "https://github.com/aaronlord/laroute/tree/master"
+            },
             "install-path": "../lord/laroute"
         },
         {
@@ -1848,6 +1926,10 @@
                 "security",
                 "xss"
             ],
+            "support": {
+                "issues": "https://github.com/mewebstudio/Purifier/issues",
+                "source": "https://github.com/mewebstudio/Purifier/tree/3.2.2"
+            },
             "install-path": "../mews/purifier"
         },
         {
@@ -1984,11 +2066,15 @@
                 "cron",
                 "schedule"
             ],
+            "support": {
+                "issues": "https://github.com/mtdowling/cron-expression/issues",
+                "source": "https://github.com/mtdowling/cron-expression/tree/v1.2.3"
+            },
             "abandoned": "dragonmantank/cron-expression",
             "install-path": "../mtdowling/cron-expression"
         },
         {
-            "name": "natxet/CssMin",
+            "name": "natxet/cssmin",
             "version": "v3.0.6",
             "version_normalized": "3.0.6.0",
             "source": {
@@ -2035,7 +2121,11 @@
                 "css",
                 "minify"
             ],
-            "install-path": "../natxet/CssMin"
+            "support": {
+                "issues": "https://github.com/natxet/CssMin/issues",
+                "source": "https://github.com/natxet/CssMin/tree/master"
+            },
+            "install-path": "../natxet/cssmin"
         },
         {
             "name": "nesbot/carbon",
@@ -2096,6 +2186,10 @@
                 "datetime",
                 "time"
             ],
+            "support": {
+                "issues": "https://github.com/briannesbitt/Carbon/issues",
+                "source": "https://github.com/briannesbitt/Carbon"
+            },
             "install-path": "../nesbot/carbon"
         },
         {
@@ -2150,6 +2244,10 @@
                 "parser",
                 "php"
             ],
+            "support": {
+                "issues": "https://github.com/nikic/PHP-Parser/issues",
+                "source": "https://github.com/nikic/PHP-Parser/tree/v4.1.0"
+            },
             "install-path": "../nikic/php-parser"
         },
         {
@@ -2222,6 +2320,10 @@
                 "nwidart",
                 "rad"
             ],
+            "support": {
+                "issues": "https://github.com/nWidart/laravel-modules/issues",
+                "source": "https://github.com/nWidart/laravel-modules/tree/master"
+            },
             "install-path": "../nwidart/laravel-modules"
         },
         {
@@ -2407,6 +2509,10 @@
                 "container-interop",
                 "psr"
             ],
+            "support": {
+                "issues": "https://github.com/php-fig/container/issues",
+                "source": "https://github.com/php-fig/container/tree/master"
+            },
             "install-path": "../psr/container"
         },
         {
@@ -2460,6 +2566,9 @@
                 "request",
                 "response"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/http-message/tree/master"
+            },
             "install-path": "../psr/http-message"
         },
         {
@@ -2510,6 +2619,9 @@
                 "psr",
                 "psr-3"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/log/tree/master"
+            },
             "install-path": "../psr/log"
         },
         {
@@ -2561,6 +2673,9 @@
                 "psr-16",
                 "simple-cache"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/simple-cache/tree/master"
+            },
             "install-path": "../psr/simple-cache"
         },
         {
@@ -2638,6 +2753,10 @@
                 "interactive",
                 "shell"
             ],
+            "support": {
+                "issues": "https://github.com/bobthecow/psysh/issues",
+                "source": "https://github.com/bobthecow/psysh/tree/v0.9.12"
+            },
             "install-path": "../psy/psysh"
         },
         {
@@ -2691,27 +2810,31 @@
                 }
             ],
             "description": "Laravel web installer",
+            "support": {
+                "issues": "https://github.com/RachidLaasri/LaravelInstaller/issues",
+                "source": "https://github.com/RachidLaasri/LaravelInstaller/tree/master"
+            },
             "install-path": "../rachidlaasri/laravel-installer"
         },
         {
             "name": "ramsey/uuid",
-            "version": "3.9.4",
-            "version_normalized": "3.9.4.0",
+            "version": "3.9.6",
+            "version_normalized": "3.9.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "be2451bef8147b7352a28fb4cddb08adc497ada3"
+                "reference": "ffa80ab953edd85d5b6c004f96181a538aad35a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/be2451bef8147b7352a28fb4cddb08adc497ada3",
-                "reference": "be2451bef8147b7352a28fb4cddb08adc497ada3",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/ffa80ab953edd85d5b6c004f96181a538aad35a3",
+                "reference": "ffa80ab953edd85d5b6c004f96181a538aad35a3",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "paragonie/random_compat": "^1 | ^2 | ^9.99.99",
-                "php": "^5.4 | ^7 | ^8",
+                "php": "^5.4 | ^7.0 | ^8.0",
                 "symfony/polyfill-ctype": "^1.8"
             },
             "replace": {
@@ -2720,14 +2843,16 @@
             "require-dev": {
                 "codeception/aspect-mock": "^1 | ^2",
                 "doctrine/annotations": "^1.2",
-                "goaop/framework": "1.0.0-alpha.2 | ^1 | ^2.1",
-                "jakub-onderka/php-parallel-lint": "^1",
+                "goaop/framework": "1.0.0-alpha.2 | ^1 | >=2.1.0 <=2.3.2",
                 "mockery/mockery": "^0.9.11 | ^1",
                 "moontoast/math": "^1.1",
+                "nikic/php-parser": "<=4.5.0",
                 "paragonie/random-lib": "^2",
-                "php-mock/php-mock-phpunit": "^0.3 | ^1.1",
-                "phpunit/phpunit": "^4.8 | ^5.4 | ^6.5",
-                "squizlabs/php_codesniffer": "^3.5"
+                "php-mock/php-mock-phpunit": "^0.3 | ^1.1 | ^2.6",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpunit/phpunit": ">=4.8.36 <9.0.0 | >=9.3.0",
+                "squizlabs/php_codesniffer": "^3.5",
+                "yoast/phpunit-polyfills": "^1.0"
             },
             "suggest": {
                 "ext-ctype": "Provides support for PHP Ctype functions",
@@ -2739,7 +2864,7 @@
                 "ramsey/uuid-console": "A console application for generating UUIDs with ramsey/uuid",
                 "ramsey/uuid-doctrine": "Allows the use of Ramsey\\Uuid\\Uuid as Doctrine field type."
             },
-            "time": "2021-08-06T20:32:15+00:00",
+            "time": "2021-09-25T23:07:42+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -2801,28 +2926,28 @@
         },
         {
             "name": "rap2hpoutre/laravel-log-viewer",
-            "version": "v0.22.1",
-            "version_normalized": "0.22.1.0",
+            "version": "v2.0.0",
+            "version_normalized": "2.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rap2hpoutre/laravel-log-viewer.git",
-                "reference": "fd0821b073771f3e7256664417055a8bbb091059"
+                "reference": "4fa9b45738095fc5febeed6e44f1516e93a8de8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rap2hpoutre/laravel-log-viewer/zipball/fd0821b073771f3e7256664417055a8bbb091059",
-                "reference": "fd0821b073771f3e7256664417055a8bbb091059",
+                "url": "https://api.github.com/repos/rap2hpoutre/laravel-log-viewer/zipball/4fa9b45738095fc5febeed6e44f1516e93a8de8c",
+                "reference": "4fa9b45738095fc5febeed6e44f1516e93a8de8c",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "4.2.*|5.*",
+                "illuminate/support": "4.2.*|5.*|^6.0|^7.0|^8.0",
                 "php": ">=5.4.0"
             },
             "require-dev": {
-                "orchestra/testbench": "^3.6",
+                "orchestra/testbench": "3.7.*",
                 "phpunit/phpunit": "^7"
             },
-            "time": "2018-10-01T09:01:30+00:00",
+            "time": "2021-11-04T12:40:05+00:00",
             "type": "laravel-package",
             "extra": {
                 "laravel": {
@@ -2859,6 +2984,10 @@
                 "logging",
                 "lumen"
             ],
+            "support": {
+                "issues": "https://github.com/rap2hpoutre/laravel-log-viewer/issues",
+                "source": "https://github.com/rap2hpoutre/laravel-log-viewer/tree/v2.0.0"
+            },
             "install-path": "../rap2hpoutre/laravel-log-viewer"
         },
         {
@@ -2932,6 +3061,10 @@
                 "spatie",
                 "user"
             ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-activitylog/issues",
+                "source": "https://github.com/spatie/laravel-activitylog/tree/master"
+            },
             "install-path": "../spatie/laravel-activitylog"
         },
         {
@@ -3059,6 +3192,11 @@
                 "mail",
                 "mailer"
             ],
+            "support": {
+                "issues": "https://github.com/swiftmailer/swiftmailer/issues",
+                "source": "https://github.com/swiftmailer/swiftmailer/tree/v6.1.3"
+            },
+            "abandoned": "symfony/mailer",
             "install-path": "../swiftmailer/swiftmailer"
         },
         {
@@ -3202,6 +3340,9 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/css-selector/tree/3.4"
+            },
             "install-path": "../symfony/css-selector"
         },
         {
@@ -3261,6 +3402,9 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/debug/tree/3.4"
+            },
             "install-path": "../symfony/debug"
         },
         {
@@ -3327,6 +3471,9 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/event-dispatcher/tree/3.4"
+            },
             "install-path": "../symfony/event-dispatcher"
         },
         {
@@ -3379,6 +3526,9 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/finder/tree/3.4"
+            },
             "install-path": "../symfony/finder"
         },
         {
@@ -3436,6 +3586,9 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/http-foundation/tree/3.4"
+            },
             "install-path": "../symfony/http-foundation"
         },
         {
@@ -3528,6 +3681,9 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/http-kernel/tree/3.4"
+            },
             "install-path": "../symfony/http-kernel"
         },
         {
@@ -3589,34 +3745,44 @@
                 "polyfill",
                 "portable"
             ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.9.0"
+            },
             "install-path": "../symfony/polyfill-ctype"
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.10.0",
-            "version_normalized": "1.10.0.0",
+            "version": "v1.24.0",
+            "version_normalized": "1.24.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "c79c051f5b3a46be09205c73b80b346e4153e494"
+                "reference": "0abb51d2f102e00a4eefcf46ba7fec406d245825"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/c79c051f5b3a46be09205c73b80b346e4153e494",
-                "reference": "c79c051f5b3a46be09205c73b80b346e4153e494",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/0abb51d2f102e00a4eefcf46ba7fec406d245825",
+                "reference": "0abb51d2f102e00a4eefcf46ba7fec406d245825",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=7.1"
+            },
+            "provide": {
+                "ext-mbstring": "*"
             },
             "suggest": {
                 "ext-mbstring": "For best performance"
             },
-            "time": "2018-09-21T13:07:52+00:00",
+            "time": "2021-11-30T18:21:41+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.9-dev"
+                    "dev-main": "1.23-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
                 }
             },
             "installation-source": "dist",
@@ -3650,6 +3816,23 @@
                 "polyfill",
                 "portable",
                 "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.24.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
             ],
             "install-path": "../symfony/polyfill-mbstring"
         },
@@ -3713,6 +3896,9 @@
                 "portable",
                 "shim"
             ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php70/tree/master"
+            },
             "install-path": "../symfony/polyfill-php70"
         },
         {
@@ -3765,6 +3951,9 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/process/tree/3.4"
+            },
             "install-path": "../symfony/process"
         },
         {
@@ -3845,6 +4034,9 @@
                 "uri",
                 "url"
             ],
+            "support": {
+                "source": "https://github.com/symfony/routing/tree/3.4"
+            },
             "install-path": "../symfony/routing"
         },
         {
@@ -3916,6 +4108,9 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/translation/tree/3.4"
+            },
             "install-path": "../symfony/translation"
         },
         {
@@ -3988,6 +4183,9 @@
                 "debug",
                 "dump"
             ],
+            "support": {
+                "source": "https://github.com/symfony/var-dumper/tree/3.4"
+            },
             "install-path": "../symfony/var-dumper"
         },
         {
@@ -4051,29 +4249,29 @@
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
-            "version": "2.2.3",
-            "version_normalized": "2.2.3.0",
+            "version": "2.2.4",
+            "version_normalized": "2.2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tijsverkoyen/CssToInlineStyles.git",
-                "reference": "b43b05cf43c1b6d849478965062b6ef73e223bb5"
+                "reference": "da444caae6aca7a19c0c140f68c6182e337d5b1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tijsverkoyen/CssToInlineStyles/zipball/b43b05cf43c1b6d849478965062b6ef73e223bb5",
-                "reference": "b43b05cf43c1b6d849478965062b6ef73e223bb5",
+                "url": "https://api.github.com/repos/tijsverkoyen/CssToInlineStyles/zipball/da444caae6aca7a19c0c140f68c6182e337d5b1c",
+                "reference": "da444caae6aca7a19c0c140f68c6182e337d5b1c",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-libxml": "*",
                 "php": "^5.5 || ^7.0 || ^8.0",
-                "symfony/css-selector": "^2.7 || ^3.0 || ^4.0 || ^5.0"
+                "symfony/css-selector": "^2.7 || ^3.0 || ^4.0 || ^5.0 || ^6.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0 || ^7.5"
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0 || ^7.5 || ^8.5.21 || ^9.5.10"
             },
-            "time": "2020-07-13T06:12:54+00:00",
+            "time": "2021-12-08T09:12:39+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -4099,6 +4297,10 @@
             ],
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
+            "support": {
+                "issues": "https://github.com/tijsverkoyen/CssToInlineStyles/issues",
+                "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/2.2.4"
+            },
             "install-path": "../tijsverkoyen/css-to-inline-styles"
         },
         {
@@ -4166,6 +4368,10 @@
                 "laravel",
                 "wordpress"
             ],
+            "support": {
+                "issues": "https://github.com/tormjens/eventy/issues",
+                "source": "https://github.com/tormjens/eventy/tree/master"
+            },
             "install-path": "../tormjens/eventy"
         },
         {
@@ -4219,6 +4425,10 @@
                 "env",
                 "environment"
             ],
+            "support": {
+                "issues": "https://github.com/vlucas/phpdotenv/issues",
+                "source": "https://github.com/vlucas/phpdotenv/tree/master"
+            },
             "install-path": "../vlucas/phpdotenv"
         },
         {
@@ -4270,6 +4480,10 @@
                 "laravel",
                 "remember"
             ],
+            "support": {
+                "issues": "https://github.com/dwightwatson/rememberable/issues",
+                "source": "https://github.com/dwightwatson/rememberable/tree/master"
+            },
             "install-path": "../watson/rememberable"
         },
         {
@@ -4336,7 +4550,80 @@
                 "mail",
                 "webklex"
             ],
+            "support": {
+                "issues": "https://github.com/Webklex/laravel-imap/issues",
+                "source": "https://github.com/Webklex/laravel-imap/tree/master"
+            },
             "install-path": "../webklex/laravel-imap"
+        },
+        {
+            "name": "webklex/php-imap",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Webklex/php-imap.git",
+                "reference": "f565c3b2510238191981dec92840bfcf3cc8b7e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Webklex/php-imap/zipball/f565c3b2510238191981dec92840bfcf3cc8b7e8",
+                "reference": "f565c3b2510238191981dec92840bfcf3cc8b7e8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "ext-iconv": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-openssl": "*",
+                "illuminate/pagination": ">=5.0.0",
+                "nesbot/carbon": ">=1.0",
+                "php": ">=7.0.0",
+                "symfony/http-foundation": ">=2.8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "time": "2022-03-10T22:38:04+00:00",
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Webklex\\PHPIMAP\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Malte Goldenbaum",
+                    "email": "github@webklex.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP IMAP client",
+            "homepage": "https://github.com/webklex/php-imap",
+            "keywords": [
+                "imap",
+                "mail",
+                "php-imap",
+                "pop3",
+                "webklex"
+            ],
+            "support": {
+                "issues": "https://github.com/Webklex/php-imap/issues",
+                "source": "https://github.com/Webklex/php-imap/tree/master"
+            },
+            "install-path": "../webklex/php-imap"
         }
     ],
     "dev": false,

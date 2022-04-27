@@ -19,7 +19,12 @@ Route::get(config('app.login_path'), 'Auth\LoginController@showLoginForm')->name
 Route::post(config('app.login_path'), 'Auth\LoginController@login');
 
 // Authentication redirects to /home
-Route::redirect('/home', '/'.config('app.dashboard_path'), 301);
+// if APP_DASHBOARD_PATH is empty APP_URL will be used
+if (config('app.dashboard_path')) {
+	Route::redirect('/home', config('app.url').'/'.config('app.dashboard_path'), 302);
+} else {
+	Route::redirect('/home', config('app.url'), 302);
+}
 
 // Public routes
 Route::get('/user-setup/{hash}', 'PublicController@userSetup')->name('user_setup');
@@ -82,6 +87,9 @@ Route::post('/mailbox/connection-settings/{id}/incoming', 'MailboxesController@c
 Route::get('/mailbox/settings/{id}/auto-reply', 'MailboxesController@autoReply')->name('mailboxes.auto_reply');
 Route::post('/mailbox/settings/{id}/auto-reply', 'MailboxesController@autoReplySave')->name('mailboxes.auto_reply.save');
 Route::post('/mailbox/ajax', ['uses' => 'MailboxesController@ajax', 'laroute' => true])->name('mailboxes.ajax');
+Route::get('/mailbox/oauth/{id}/{provider}', ['uses' => 'MailboxesController@oauth'])->name('mailboxes.oauth');
+Route::get('/mailbox/oauth', ['uses' => 'MailboxesController@oauth'])->name('mailboxes.oauth_callback');
+Route::get('/mailbox/oauth-disconnect/{id}/{provider}', ['uses' => 'MailboxesController@oauthDisconnect'])->name('mailboxes.oauth_disconnect');
 
 // Customers
 Route::get('/customers/{id}/edit', 'CustomersController@update')->name('customers.update');

@@ -63,6 +63,8 @@ class MailboxesController extends Controller
      */
     public function createSave(Request $request)
     {
+        $invalid = false;
+
         $this->authorize('create', 'App\Mailbox');
 
         $validator = Validator::make($request->all(), [
@@ -72,7 +74,12 @@ class MailboxesController extends Controller
 
         // //event(new Registered($user = $this->create($request->all())));
 
-        if ($validator->fails()) {
+        if (Mailbox::userEmailExists($request->email)) {
+            $invalid = true;
+            $validator->errors()->add('email', __('There is a user with such email. Users and mailboxes can not have the same email addresses.'));
+        }
+
+        if ($invalid || $validator->fails()) {
             return redirect()->route('mailboxes.create')
                         ->withErrors($validator)
                         ->withInput();
@@ -101,7 +108,7 @@ class MailboxesController extends Controller
             $accessible_route = '';
 
             $mailbox_settings = $user->mailboxSettings($mailbox->id);
-            $access_permissions = json_decode($mailbox_settings->access);
+            $access_permissions = json_decode($mailbox_settings->access ?? '');
 
             if ($access_permissions && is_array($access_permissions)) {
                 foreach ($access_permissions as $perm) {
@@ -142,6 +149,7 @@ class MailboxesController extends Controller
      */
     public function updateSave($id, Request $request)
     {
+        $invalid = false;
         $mailbox = Mailbox::findOrFail($id);
 
         $user = auth()->user();
@@ -172,8 +180,12 @@ class MailboxesController extends Controller
             ]);
 
             //event(new Registered($user = $this->create($request->all())));
+            if (Mailbox::userEmailExists($request->email)) {
+                $invalid = true;
+                $validator->errors()->add('email', __('There is a user with such email. Users and mailboxes can not have the same email addresses.'));
+            }
 
-            if ($validator->fails()) {
+            if ($invalid || $validator->fails()) {
                 return redirect()->route('mailboxes.update', ['id' => $id])
                             ->withErrors($validator)
                             ->withInput();
@@ -191,6 +203,8 @@ class MailboxesController extends Controller
                     ->withInput();
             }
         }
+
+        \Eventy::action( 'mailboxes.settings_before_save', $id, $request );
 
         $mailbox->fill($request->all());
 
@@ -343,16 +357,16 @@ class MailboxesController extends Controller
     /**
      * Mailbox incoming settings.
      */
-    public function connectionIncoming($id)
+    public function connectionIncoming($id, Request $request)
     {
         $mailbox = Mailbox::findOrFail($id);
         $this->authorize('admin', $mailbox);
 
         $fields = [
-            'in_server'   => $mailbox->in_server,
-            'in_port'     => $mailbox->in_port,
-            'in_username' => $mailbox->in_username,
-            'in_password' => $mailbox->in_password,
+            'in_server'   => $mailbox->in_server ?? '',
+            'in_port'     => $mailbox->in_port ?? '',
+            'in_username' => $mailbox->in_username ?? '',
+            'in_password' => $mailbox->in_password ?? '',
         ];
 
         $validator = Validator::make($fields, [
@@ -392,7 +406,7 @@ class MailboxesController extends Controller
         ]);
 
         // Do not save dummy password.
-        if (preg_match("/^\*+$/", $request->in_password)) {
+        if (preg_match("/^\*+$/", $request->in_password ?? '')) {
             $params = $request->except(['in_password']);
         } else {
             $params = $request->all();
@@ -756,7 +770,7 @@ class MailboxesController extends Controller
                     $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $mailbox->id)->first();
                     if (!$mailbox_user) {
                         // User may not be connected to the mailbox yet
-                        $user->mailboxes()->attach($id);
+                        $user->mailboxes()->attach($mailbox->id);
                         $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $mailbox->id)->first();
                     }
                     $mailbox_user->settings->mute = (bool)$request->mute;
@@ -778,4 +792,106 @@ class MailboxesController extends Controller
         return \Response::json($response);
     }
 
+    public function oauth(Request $request)
+    {
+        $mailbox_id = $request->id ?? '';
+        $provider = $request->provider ?? '';
+        
+        $state_data = [];
+        if (!empty($request->state)) {
+            $state_data = json_decode($request->state, true);
+            if (!empty($state_data['mailbox_id'])) {
+                $mailbox_id = $state_data['mailbox_id'];
+            }
+            if (!empty($state_data['provider'])) {
+                $provider = $state_data['provider'];
+            }
+        }
+
+        // MS Exchange.
+        if (!empty($request->error) && $request->error == 'invalid_request' && !empty($request->error_description)) {
+            return htmlspecialchars($request->error_description);
+        }
+
+        if (empty($provider)) {
+            return 'Invalid oAuth Provider';
+        }
+
+        $mailbox = Mailbox::findOrFail($mailbox_id);
+        $this->authorize('admin', $mailbox);
+
+        if (empty($mailbox)) {
+            return __('Mailbox not found').': '.$mailbox_id;
+        }
+        if (empty($mailbox->in_username)) {
+            return 'Enter oAuth Client ID as Username and save mailbox settings';
+        }
+        if (empty($mailbox->in_password)) {
+            return 'Enter oAuth Client Secret as Password and save mailbox settings';
+        }
+
+        $session_data = [];
+        if (\Session::get('mailbox_oauth_'.$provider.'_'.$mailbox_id)) {
+            $session_data = \Session::get('mailbox_oauth_'.$provider.'_'.$mailbox_id);
+        }
+
+        if (empty($request->code)) {
+            $state = [
+                'provider' => $provider,
+                'mailbox_id' => $mailbox_id,
+                'state' => crc32($mailbox->in_username.$mailbox->in_password),
+            ];
+            $url = \MailHelper::oauthGetAuthorizationUrl(\MailHelper::OAUTH_PROVIDER_MICROSOFT, [
+                'state' => json_encode($state),
+                'client_id' => $mailbox->in_username,
+            ]);
+            if ($url) {
+                \Session::put('mailbox_oauth_'.$provider.'_'.$mailbox_id, $state);
+                //     [
+                //     'provider' => $request->provider,
+                //     'mailbox_id' => $request->mailbox_id,
+                //     'state' => $provider->getState(),
+                // ]);
+                return redirect()->away($url);
+            } else {
+                return 'Could not generate authorization URL: check Client ID (Username) and Client Secret (Password)';
+            }
+
+        // Check given state against previously stored one to mitigate CSRF attack
+        } elseif (empty($request->state) || ($state_data['state'] ?? '') !== ($session_data['state'] ?? '')) {
+            
+            \Session::forget('mailbox_oauth_'.$provider.'_'.$mailbox_id);
+            return 'Invalid oAuth state';
+
+        } else {
+
+            // Try to get an access token (using the authorization code grant)
+            $token_data = \MailHelper::oauthGetAccessToken(\MailHelper::OAUTH_PROVIDER_MICROSOFT, [
+                'client_id' => $mailbox->in_username,
+                'client_secret' => $mailbox->in_password,
+                'code' => $request->code,
+            ]);
+
+            if (!empty($token_data['a_token'])) {
+                $mailbox->setMetaParam('oauth', $token_data, true);
+            } elseif (!empty($token_data['error'])) {
+                return __('Error occurred').': '.htmlspecialchars($token_data['error']);
+            }
+
+            return redirect()->route('mailboxes.connection.incoming', ['id' => $mailbox_id]);
+        }
+    }
+
+    public function oauthDisconnect(Request $request)
+    {
+        $mailbox_id = $request->id ?? '';
+        $provider = $request->provider ?? '';
+
+        $mailbox = Mailbox::findOrFail($mailbox_id);
+        $this->authorize('admin', $mailbox);
+        
+        // oAuth Disconnect.
+        $mailbox->removeMetaParam('oauth', true);
+        return \MailHelper::oauthDisconnect($provider, route('mailboxes.connection.incoming', ['id' => $mailbox_id]));
+    }
 }

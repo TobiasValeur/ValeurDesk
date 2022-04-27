@@ -2,6 +2,7 @@ var fs_sidebar_menu_applied = false;
 var fs_loader_timeout;
 var fs_processing_send_reply = false;
 var fs_processing_save_draft = false;
+var fs_send_reply_allowed = true;
 var fs_send_reply_after_draft = false;
 var fs_autosave_note = true;
 var fs_connection_errors = 0;
@@ -441,6 +442,8 @@ function mailboxUpdateInit(from_name_custom)
 				}
 			}
 		});
+
+		fsDoAction('mailbox.update_init');
 	});
 }
 
@@ -938,7 +941,7 @@ function initConversation()
 
 		// Change conversation assignee
 	    jQuery(".conv-user li > a").click(function(e){
-			if (!$(this).hasClass('active')) {
+			if (!$(this).hasClass('active') && !$(this).hasClass('disabled')) {
 				if (fsApplyFilter('conversation.can_change_user', true, {trigger: $(this)})) {
 					$(this).trigger('fs-conv-user-change');
 				}
@@ -1528,6 +1531,7 @@ function convEditorInit()
 		onReplyBlur();
 	});
 
+	fsDoAction('conv_editor_init');
 
 	// Autosave draft periodically
 	autosaveDraft();
@@ -1889,6 +1893,7 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 
 		// Send reply, new conversation or note
 	    $(".btn-reply-submit").click(function(e) {
+	
 	    	// This is extra protection from double click on Send button
 	    	// DOM operation are slow sometimes
 	    	if (fs_processing_send_reply) {
@@ -1907,51 +1912,57 @@ function initReplyForm(load_attachments, init_customer_selector, is_new_conv)
 	    		return;
 	    	}
 
-	    	if (!fsApplyFilter('conversation.can_submit', true)) {
-	    		fs_processing_send_reply = false;
-	    		return;
-	    	}
-
-	    	button.button('loading');
-
 	    	// If draft is being sent, we need to wait and send reply after draft has been saved.
 	    	if (fs_processing_save_draft) {
 	    		fs_send_reply_after_draft = true;
 	    		return;
 	    	}
 
-	    	data = form.serialize();
+	    	if (!fsApplyFilter('conversation.can_submit', true, {trigger: button, form: form})) {
+	    		fs_processing_send_reply = false;
+	    		return;
+	    	}
+
+	    	// For previous filter
+	    	if (!fs_send_reply_allowed) {
+	    		fs_processing_send_reply = false;
+	    		return;
+	    	}
+
+			data = form.serialize();
 	    	data += '&action=send_reply';
 
+	    	button.button('loading');
+
 			fsAjax(data, laroute.route('conversations.ajax'), function(response) {
-				if (typeof(response.status) != "undefined" && response.status == 'success') {
-					// Forget note
-					if (isNote()) {
-						fs_autosave_note = false;
-						forgetNote(getGlobalAttr('conversation_id'));
-					}
-					if (typeof(response.redirect_url) != "undefined") {
-						window.location.href = response.redirect_url;
+					if (typeof(response.status) != "undefined" && response.status == 'success') {
+						// Forget note
+						if (isNote()) {
+							fs_autosave_note = false;
+							forgetNote(getGlobalAttr('conversation_id'));
+						}
+						if (typeof(response.redirect_url) != "undefined") {
+							window.location.href = response.redirect_url;
+						} else {
+							window.location.href = '';
+						}
 					} else {
-						window.location.href = '';
+						showAjaxError(response);
+						button.button('reset');
 					}
-				} else {
-					showAjaxError(response);
+					loaderHide();
+					fs_processing_send_reply = false;
+				},
+				true,
+				function() {
+					showFloatingAlert('error', Lang.get("messages.ajax_error"));
+					loaderHide();
 					button.button('reset');
-				}
-				loaderHide();
-				fs_processing_send_reply = false;
-			},
-			true,
-			function() {
-				showFloatingAlert('error', Lang.get("messages.ajax_error"));
-				loaderHide();
-				button.button('reset');
-				fs_processing_send_reply = false;
-			});
+					fs_processing_send_reply = false;
+				});
 
 			e.preventDefault();
-		});
+		})
 	});
 }
 
@@ -2005,6 +2016,8 @@ function notificationsInit()
 }
 
 function getQueryParam(name, qs) {
+	var arrays_without_indexes = {};
+
 	if (typeof(qs) == "undefined") {
 		qs = document.location.search;
 	}
@@ -2015,12 +2028,27 @@ function getQueryParam(name, qs) {
         re = /[?&]?([^=]+)=([^&]*)/g;
 
     while (tokens = re.exec(qs)) {
-        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    	key = decodeURIComponent(tokens[1]);
+
+        // Arrays without indexes - []
+        if (/\[\]$/.test(key)) {
+        	if (typeof(arrays_without_indexes[key]) == "undefined") {
+        		arrays_without_indexes[key] = 0;
+        	} else {
+        		arrays_without_indexes[key]++;
+        	}
+        	parsed_key = /(.*)\[\]$/.exec(key);
+        	if (typeof(parsed_key[1]) != "undefined") {
+        		key = parsed_key[1]+'['+arrays_without_indexes[key]+']';
+        	}
+        }
+        params[key] = decodeURIComponent(tokens[2]);
     }
 
     // Process arrays
     for (var param in params) {
     	
+    	// Two dimentional
     	var m = param.match(/^([^\[]+)\[([^\[]+)\]$/i);
 
     	if (m && m.length) {
@@ -2029,6 +2057,21 @@ function getQueryParam(name, qs) {
     		}
     		if (typeof(params[m[1]]) == "object") {
     			params[m[1]][m[2]] = params[param];
+    		}
+    	}
+
+    	// Three dimentional
+    	var m = param.match(/^([^\[]+)\[([^\[]+)\]\[([^\[]+)\]$/i);
+
+    	if (m && m.length) {
+    		if (typeof(params[m[1]]) == "undefined") {
+    			params[m[1]] = {};
+    		}
+    		if (typeof(params[m[1]]) == "object") {
+    			if (typeof(params[m[1]][m[2]]) == "undefined") {
+    				params[m[1]][m[2]] = {};
+    			}
+    			params[m[1]][m[2]][m[3]] = params[param];
     		}
     	}
     }
@@ -2367,6 +2410,9 @@ function loadConversations(page, table, no_loader)
 	var datas = table.data();
 	for (data_name in datas) {
 		if (/^filter_/.test(data_name)) {
+			if (filter == null) {
+				filter = {};
+			}
 			filter[data_name.replace(/^filter_/, '')] = datas[data_name];
 		}
 	}
@@ -3722,7 +3768,12 @@ function finishSaveDraft()
 function setUrl(url)
 {
 	if (window.history && typeof(window.history.replaceState) != "undefined") {
-        window.history.replaceState({isMine:true}, 'title',  url);
+		try {
+			// Catch an error if by some reason current protocol and protocol in url are different
+        	window.history.replaceState({isMine:true}, 'title', url);
+        } catch (e) {
+        	// Do nothing
+        }
     }
 }
 
@@ -4216,6 +4267,10 @@ function converstationBulkActionsInit()
 
 		// Change conversation assignee
 		$(".conv-user li > a", bulk_buttons).click(function(e) {
+			if ($(this).hasClass('disabled')) {
+				return;
+			}
+
 			var user_id = $(this).data('user_id');
 
 			var conv_ids = getSelectedConversations(checkboxes);

@@ -47,7 +47,7 @@ class SendNotificationToUsers implements ShouldQueue
         $mailbox = $this->conversation->mailbox;
 
         // Configure mail driver according to Mailbox settings
-        \App\Misc\Mail::setMailDriver($mailbox);
+        \App\Misc\Mail::setMailDriver($mailbox, null, $this->conversation);
 
         // Threads has to be sorted here, if sorted before, they come here in wrong order
         $this->threads = $this->threads->sortByDesc(function ($item, $key) {
@@ -127,6 +127,7 @@ class SendNotificationToUsers implements ShouldQueue
             app()->setLocale($user->getLocale());
 
             $headers['X-FreeScout-Mail-Type'] = 'user.notification';
+            $headers = \Eventy::filter('jobs.send_reply_to_customer.headers', $headers, $user, $mailbox, $this->conversation, $this->threads, $from);
 
             $exception = null;
 

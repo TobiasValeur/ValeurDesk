@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}" @if (Helper::isLocaleRtl()) dir="rtl" @endif>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="robots" content="noindex,nofollow">
+    
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@if ($__env->yieldContent('title_full'))@yield('title_full') @elseif ($__env->yieldContent('title'))@yield('title') @else Valeurdesk @endif</title>
 
+    <title>@if ($__env->yieldContent('title_full'))@yield('title_full') @elseif ($__env->yieldContent('title'))@yield('title') @else Valeurdesk @endif</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     {{--<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">--}}
@@ -23,8 +24,13 @@
     {{-- style.css must be the last to able to redefine styles --}}
     @php
         try {
+            $styles= array('/css/fonts.css', '/css/bootstrap.css', '/css/select2/select2.min.css', '/js/featherlight/featherlight.min.css', '/js/featherlight/featherlight.gallery.min.css', '/css/magic-check.css', '/css/style.css' );
+            if (Helper::isLocaleRtl()) {
+                $styles[] = '/css/bootstrap-rtl.css';
+                $styles[] = '/css/style-rtl.css';
+            }
     @endphp
-    {!! Minify::stylesheet(\Eventy::filter('stylesheets', array('/css/fonts.css', '/css/bootstrap.css', '/css/select2/select2.min.css', '/js/featherlight/featherlight.min.css', '/js/featherlight/featherlight.gallery.min.css', '/css/magic-check.css', '/css/style.css'))) !!}
+    {!! Minify::stylesheet(\Eventy::filter('stylesheets', $styles)) !!}
     @php
         } catch (\Exception $e) {
             // Try...catch is needed to catch errors when activating a module and public symlink not created for module.
@@ -34,8 +40,8 @@
 
     @yield('stylesheets')
 </head>
-<body class="@if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" @endif>
-    <div id="app">
+<body class="locale-{{ app()->getLocale() }} @if (Helper::isLocaleRtl()) rtl @endif @if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" @endif>
+<div id="app">
 
         @if (Auth::user() && empty(app('request')->x_embed) && empty($__env->yieldContent('guest_mode')))
 
@@ -178,7 +184,7 @@
                                 <li class="dropdown">
 
                                     <a href="#" class="dropdown-toggle dropdown-toggle-icon dropdown-toggle-account" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre title="{{ __('Account') }}" aria-label="{{ __('Account') }}">
-                                        <span class="photo-sm">@include('partials/person_photo', ['person' => Auth::user()])</span>&nbsp;<span class="nav-user">{{ Auth::user()->first_name }}</span> <span class="caret"></span>
+                                        <span class="photo-sm">@include('partials/person_photo', ['person' => Auth::user()])</span>&nbsp;<span class="nav-user">{{ Auth::user()->first_name }}@action('menu.user.name_append', Auth::user())</span> <span class="caret"></span>
                                     </a>
 
                                     <ul class="dropdown-menu">

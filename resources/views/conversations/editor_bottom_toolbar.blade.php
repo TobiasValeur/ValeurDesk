@@ -6,6 +6,7 @@
             {!! $conversation->getSignatureProcessed([], true) !!}
         @endif
     </div>
+    @action('conv_editor.editor_toolbar_prepend', $mailbox, $conversation)
 	<span class="editor-btm-text">{{ __('Status') }}:</span> 
     {{-- Note keeps status--}}
 	<select name="status" class="form-control parsley-exclude" data-reply-status="{{ $mailbox->ticket_status }}" data-note-status="{{ $conversation->status }}">
@@ -24,7 +25,7 @@
             || $mailbox->ticket_assignee == App\Mailbox::TICKET_ASSIGNEE_REPLYING)data-default="true" selected="selected"@endif>{{ __('Me') }}</option>
         @foreach ($mailbox->usersAssignable() as $user)
             @if ($user->id != Auth::user()->id)
-            	<option value="{{ $user->id }}" @if ($conversation->user_id == $user->id && !in_array($mailbox->ticket_assignee, [ App\Mailbox::TICKET_ASSIGNEE_REPLYING, App\Mailbox::TICKET_ASSIGNEE_ANYONE]))data-default="true" selected="selected"@endif>{{ $user->getFullName() }}</option>
+            	<option value="{{ $user->id }}" @if ($conversation->user_id == $user->id && !in_array($mailbox->ticket_assignee, [ App\Mailbox::TICKET_ASSIGNEE_REPLYING, App\Mailbox::TICKET_ASSIGNEE_ANYONE]))data-default="true" selected="selected"@endif @action('assignee_list.option_attrs', $user)>{{ $user->getFullName() }}@action('assignee_list.item_append', $user)</option>
             @endif
         @endforeach
     </select> 

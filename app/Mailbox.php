@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Email;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Watson\Rememberable\Rememberable;
@@ -531,10 +533,11 @@ class Mailbox extends Model
      * Get From array for the Mail function.
      *
      * @param App\User $from_user
+     * @param App\Conversation $conversation
      *
      * @return array
      */
-    public function getMailFrom($from_user = null)
+    public function getMailFrom($from_user = null, $conversation = null)
     {
         // Mailbox name by default
         $name = $this->name;
@@ -545,7 +548,7 @@ class Mailbox extends Model
             $name = $from_user->getFullName();
         }
 
-        return ['address' => $this->email, 'name' => $name];
+        return [ 'address' => \Eventy::filter( 'mailbox.get_mail_from_address', $this->email, $from_user, $conversation ), 'name' => \Eventy::filter( 'mailbox.get_mail_from_name', $name, $from_user, $conversation ) ];
     }
 
     /**
@@ -837,10 +840,52 @@ class Mailbox extends Model
         return $route;
     }
 
-    public function setMetaParam($param, $value)
+    public function setMetaParam($param, $value, $save = false)
     {
         $meta = $this->meta;
         $meta[$param] = $value;
         $this->meta = $meta;
+
+        if ($save) {
+            $this->save();
+        }
+    }
+
+    public function removeMetaParam($param, $save = false)
+    {
+        $meta = $this->meta;
+        if (isset($meta[$param])) {
+            unset($meta[$param]);
+        }
+        $this->meta = $meta;
+
+        if ($save) {
+            $this->save();
+        }
+    }
+
+    /**
+     * Check if there is a user with specified email.
+     */
+    public static function userEmailExists($email)
+    {
+        $email = Email::sanitizeEmail($email);
+        $user = User::where('email', $email)->first();
+
+        if ($user) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function oauthEnabled()
+    {
+        return !empty($this->meta['oauth']['provider']);
+    }
+
+    public function oauthGetParam($param)
+    {
+        return $this->meta['oauth'][$param] ?? '';
     }
 }
