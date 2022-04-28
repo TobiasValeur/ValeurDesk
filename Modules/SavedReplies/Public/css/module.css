@@ -4,3 +4,11 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
+.sr-li-search {
+    padding-left: 5px!important;
+    padding-right: 9px!important;
+}
+.sr-li-search:hover {
+	background-color: #fff!important;
+	cursor: default!important;
+}

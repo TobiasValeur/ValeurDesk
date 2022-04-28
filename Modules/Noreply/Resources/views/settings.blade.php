@@ -13,7 +13,7 @@
         <div class="col-sm-6">
             <textarea class="form-control input-sized-lg" rows="5" name="settings[noreply.emails_custom]">{{ implode("\n", $settings['noreply.emails_custom']) }}</textarea>
             <p class="form-help">
-                {{ __('Enter email prefixes without @ sign one per line. Use a dash where you want to allow a dash or no symbol.') }}
+                {{ __('Enter email prefixes without @ sign or full email addresses one per line.') }} {{ __('Use an asterisk * where you want to allow any number of any symbols.') }} {{ __('Use a dash where you want to allow a dash or no symbol.') }}
             </p>
         </div>
     </div>

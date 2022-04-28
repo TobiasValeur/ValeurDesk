@@ -25,6 +25,11 @@
 	</head>
     <body @yield('body_attrs')>
     	<div id="chatw-header" @if (Request::get('color')) style="background-color: {{ Request::get('color') }} @endif">
+    		@if (Request::get('back_url'))
+	    	    <a href="{{ Request::get('back_url') }}" id="chatw-back">
+	    			<i class="glyphicon glyphicon-chevron-left"></i>
+	    		</a>
+	    	@endif
     		@yield('title')
     		<div id="chatw-minimize">
     			<svg width="16" height="16" viewBox="0 0 16 16"><path stroke="white" stroke-linecap="round" stroke-width="2" d="M3 8h10"></path></svg>

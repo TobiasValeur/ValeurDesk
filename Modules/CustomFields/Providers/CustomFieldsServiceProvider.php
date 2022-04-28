@@ -66,7 +66,9 @@ class CustomFieldsServiceProvider extends ServiceProvider
 
         // Add item to the mailbox menu
         \Eventy::addAction('mailboxes.settings.menu', function($mailbox) {
-          	echo \View::make('customfields::partials/settings_menu', ['mailbox' => $mailbox])->render();
+            if (auth()->user()->isAdmin()) {
+                echo \View::make('customfields::partials/settings_menu', ['mailbox' => $mailbox])->render();
+            }
         }, 15);
 
         // Show block in conversation
@@ -337,6 +339,8 @@ class CustomFieldsServiceProvider extends ServiceProvider
                                 return $cf_date < $now || $cf_date > $now->addDays((int)$value+1);
                             } elseif ($operator == 'not_last_days') {
                                 return $cf_date > $now || $cf_date < $now->subDays((int)$value+1);
+                            } elseif ($operator == 'not_empty') {
+                                return true;
                             }
                         }
                     }

@@ -57,6 +57,8 @@ function rptRefresh()
 	data.chart.group_by = $('#rpt-group-by button.active').val();
 	data.chart.type = $('#rpt-chart-type').val();
 
+	fsDoAction('reports.before_refresh', {data: data});
+
 	loader.attr('disabled', 'disabled').children('.glyphicon:first').addClass('glyphicon-spin');
 	$('.rpt-filter :input').attr('disabled', 'disabled');
 	$('#rpt-options :input').attr('disabled', 'disabled');

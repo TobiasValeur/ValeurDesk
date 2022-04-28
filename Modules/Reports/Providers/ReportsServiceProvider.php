@@ -2,7 +2,6 @@
 
 namespace Modules\Reports\Providers;
 
-use Modules\Reports\Entities\Reports;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
@@ -39,19 +38,6 @@ class ReportsServiceProvider extends ServiceProvider
         $this->hooks();
     }
 
-    const PERM_VIEW_REPORTS = 50;
-
-    public static function canViewReports($user = null)
-    {
-        if (!$user) {
-            $user = auth()->user();
-        }
-        if (!$user) {
-            return false;
-        }
-        return $user->isAdmin() || $user->hasPermission(\Reports::PERM_VIEW_REPORTS);
-    }
-
     /**
      * Module hooks.
      */
@@ -62,7 +48,7 @@ class ReportsServiceProvider extends ServiceProvider
             $styles[] = \Module::getPublicPath(REPORTS_MODULE).'/css/module.css';
             return $styles;
         });
-
+        
         // Add module's JS file to the application layout.
         \Eventy::addFilter('javascripts', function($javascripts) {
             $javascripts[] = \Module::getPublicPath(REPORTS_MODULE).'/js/laroute.js';
@@ -73,13 +59,13 @@ class ReportsServiceProvider extends ServiceProvider
 
         // Add item to the mailbox menu
         \Eventy::addAction('menu.append', function($mailbox) {
-            if (\Reports::canViewReports()) {
+            if (auth()->user()->isAdmin()) {
                 echo \View::make('reports::partials/menu', [])->render();
             }
         });
 
         \Eventy::addFilter('menu.selected', function($menu) {
-            if (\Reports::canViewReports()) {
+            if (auth()->user() && auth()->user()->isAdmin()) {
                 $menu['reports'] = [
                     'reports.conversations',
                     'reports.productivity',
@@ -89,18 +75,6 @@ class ReportsServiceProvider extends ServiceProvider
             }
             return $menu;
         });
-
-        \Eventy::addFilter('user_permissions.list', function($list) {
-            $list[] = \Reports::PERM_VIEW_REPORTS;
-            return $list;
-        });
-
-        \Eventy::addFilter('user_permissions.name', function($name, $permission) {
-            if ($permission != \Reports::PERM_VIEW_REPORTS) {
-                return $name;
-            }
-            return __('Users are allowed to view reports');
-        }, 20, 2);
     }
 
     public static function getCustomFieldFilters()
@@ -113,7 +87,6 @@ class ReportsServiceProvider extends ServiceProvider
 
             if ($mailbox_ids) {
                 $custom_fields = \Modules\CustomFields\Entities\CustomField::whereIn('mailbox_id', $mailbox_ids)
-                    ->groupBy('name')
                     ->get();
             }
         }

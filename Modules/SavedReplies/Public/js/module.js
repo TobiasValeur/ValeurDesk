@@ -51,6 +51,11 @@ var EditorSavedRepliesButton = function (context) {
 	        		target = target.parent();
 	        	}
 
+	        	if ($(e.target).hasClass('sr-li-search') || $(e.target).parent().hasClass('sr-li-search')) {
+	        		e.stopPropagation();
+	        		return false;
+	        	}
+
 	        	var saved_reply_id = target.attr('data-value');
 	        	if (saved_reply_id) {
 	        		if (target.children('.caret:first').length) {
@@ -300,4 +305,54 @@ function showSaveThisReply(jmodal)
 	// Show text
 	$('.modal-dialog .new-saved-reply-editor:visible:first textarea[name="text"]:first').val(getReplyBody());
 	initNewSavedReply(jmodal);
+}
+
+function srSearch(el)
+{
+	var expand_parents = [];
+	var input = $(el);
+
+	var q = input.val().toLowerCase();
+	var lis = input.parents('.dropdown-saved-replies:first').children('li:gt(0)');
+	var items = lis.find('a[data-value!=""]:not(.sr-cat)');
+
+	if (q.length < 1) {
+		// Show default items without parents
+		lis.filter(':not([data-parents])').removeClass('hidden');
+		lis.filter('[data-parents]').addClass('hidden');
+	} else {
+		// Filter
+		$(items).each(function(i, el) {
+			var item = $(el);
+			if (item.text().toLowerCase().indexOf(q) != -1) {
+				// Show item
+				item.parent().removeClass('hidden');
+				var data_parents = $(el).parent().attr('data-parents');
+
+				if (data_parents) {
+					var parents = data_parents.split(',');
+					expand_parents = expand_parents.concat(parents);
+				}
+			} else {
+				// Hide item
+				item.parent().addClass('hidden');
+			}
+		});
+		// Expand parents
+		if (expand_parents.length) {
+			var values = '';
+			for (var i in expand_parents) {
+				lis.find('a.sr-cat[data-value="'+expand_parents[i]+'"]').parent().removeClass('hidden');
+			}
+			// Collapse non-expanded parents
+			$(lis.find('a.sr-cat')).each(function(i, el) {
+				var cat = $(el);
+				if (expand_parents.indexOf(cat.attr('data-value')) == -1 && !cat.hasClass('hidden')) {
+					cat.parent().addClass('hidden');
+				}
+			});
+		} else {
+			lis.find('a.sr-cat').parent().addClass('hidden');
+		}
+	}
 }
