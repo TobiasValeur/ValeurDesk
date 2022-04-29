@@ -15,9 +15,6 @@ class ReportsController extends Controller
 {
     public function conversationsReport()
     {
-        if (!\Reports::canViewReports()) {
-            \Helper::denyAccess();
-        }
         $filters['to'] = User::dateFormat(date('Y-m-d H:i:s'), 'Y-m-d', null, false);
         $filters['from'] = date('Y-m-d', strtotime($filters['to'].' -1 week'));
 
@@ -28,12 +25,9 @@ class ReportsController extends Controller
 
     public function productivityReport()
     {
-        if (!\Reports::canViewReports()) {
-            \Helper::denyAccess();
-        }
         $filters['to'] = User::dateFormat(date('Y-m-d H:i:s'), 'Y-m-d', null, false);
         $filters['from'] = date('Y-m-d', strtotime($filters['to'].' -1 week'));
-
+        
         return view('reports::productivity', [
             'filters' => $filters
         ]);
@@ -41,12 +35,9 @@ class ReportsController extends Controller
 
     public function satisfactionReport()
     {
-        if (!\Reports::canViewReports()) {
-            \Helper::denyAccess();
-        }
         $filters['to'] = User::dateFormat(date('Y-m-d H:i:s'), 'Y-m-d', null, false);
         $filters['from'] = date('Y-m-d', strtotime($filters['to'].' -1 week'));
-
+        
         return view('reports::satisfaction', [
             'filters' => $filters
         ]);
@@ -54,12 +45,9 @@ class ReportsController extends Controller
 
     public function timeReport()
     {
-        if (!\Reports::canViewReports()) {
-            \Helper::denyAccess();
-        }
         $filters['to'] = User::dateFormat(date('Y-m-d H:i:s'), 'Y-m-d', null, false);
         $filters['from'] = date('Y-m-d', strtotime($filters['to'].' -1 week'));
-
+        
         return view('reports::time', [
             'filters' => $filters
         ]);
@@ -70,9 +58,6 @@ class ReportsController extends Controller
      */
     public function ajax(Request $request)
     {
-        if (!\Reports::canViewReports()) {
-            \Helper::denyAccess();
-        }
         $response = [
             'status' => 'error',
             'msg'    => '', // this is error message
@@ -83,7 +68,7 @@ class ReportsController extends Controller
         switch ($request->action) {
 
             case 'report':
-
+                
                 switch ($request->report_name) {
                     case \Reports::REPORT_CONVERSATIONS:
                         $data = $this->getReportDataConversations($request);
@@ -92,7 +77,7 @@ class ReportsController extends Controller
                     case \Reports::REPORT_PRODUCTIVITY:
                         $data = $this->getReportDataProductivity($request);
                         break;
-
+                        
                     case \Reports::REPORT_SATISFACTION:
                         $data = $this->getReportSatisfaction($request);
                         break;
@@ -162,7 +147,7 @@ class ReportsController extends Controller
             case 'new_conv':
                 $data['chart'] = $this->chartNewConv($data['chart'], $request);
                 break;
-
+            
             case 'messages':
                 $data['chart'] = $this->chartMessages($data['chart'], $request);
                 break;
@@ -217,7 +202,7 @@ class ReportsController extends Controller
                     $this->chartCustomersHelpedData($request, true)
                 );
                 break;
-
+            
             case 'replies':
                 $data['chart'] = $this->getChart(
                     $data['chart'],
@@ -225,7 +210,7 @@ class ReportsController extends Controller
                     $this->chartRepliesData($request),
                     $this->chartRepliesData($request, true)
                 );
-                break;
+                break;   
 
             case 'closed':
                 $data['chart'] = $this->getChart(
@@ -253,7 +238,7 @@ class ReportsController extends Controller
     }
 
     /**
-     * Number of conversations touched (received, replied to, status changed,
+     * Number of conversations touched (received, replied to, status changed, 
      * assigned, workflow activated on), excluding spam and deleted conversations.
      */
     public function countTotalConv($request, $prev = false)
@@ -274,7 +259,7 @@ class ReportsController extends Controller
     {
         $query = Conversation::where('state', Conversation::STATE_PUBLISHED)
             ->where('status', '!=', Conversation::STATUS_SPAM);
-
+        
         $this->applyFilter($query, $request, $prev);
 
         return $query->count();
@@ -291,7 +276,7 @@ class ReportsController extends Controller
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             })
             ->where('threads.type', Thread::TYPE_CUSTOMER);
-
+        
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -485,7 +470,7 @@ class ReportsController extends Controller
         }
         return $group_by;
     }
-
+    
     public function chartNewConv($chart, $request)
     {
         $categories = $this->chartCategories($chart, $request);
@@ -493,7 +478,7 @@ class ReportsController extends Controller
         $chart['categories'] = $this->chartCategories($chart, $request, true);
 
         $chart = $this->chartAddSeries(
-            $chart,
+            $chart, 
             $this->chartNewConvData($request, $categories),
             $this->chartNewConvData($request, $categories, true)
         );
@@ -508,7 +493,7 @@ class ReportsController extends Controller
         $chart['categories'] = $this->chartCategories($chart, $request, true);
 
         $chart = $this->chartAddSeries(
-            $chart,
+            $chart, 
             $this->chartMessagesData($request, $categories),
             $this->chartMessagesData($request, $categories, true)
         );
@@ -533,7 +518,7 @@ class ReportsController extends Controller
                     case 'd':
                         $category = $to->format('M j');
                         break;
-
+                    
                     case 'w':
                         $category = $to->format('M j');
                         break;
@@ -550,7 +535,7 @@ class ReportsController extends Controller
                 case 'd':
                     $to->subDay();
                     break;
-
+                
                 case 'w':
                     $to->subWeek();
                     break;
@@ -559,7 +544,7 @@ class ReportsController extends Controller
                     $to->subMonth();
                     break;
             }
-
+            
         }
 
         return $categories;
@@ -811,7 +796,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-
+        
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -861,7 +846,7 @@ class ReportsController extends Controller
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             })
             ->distinct('conversations.id');
-
+        
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count('conversations.id');
@@ -892,7 +877,7 @@ class ReportsController extends Controller
         $chart['categories'] = $this->chartCategories($chart, $request, true);
 
         $chart = $this->chartAddSeries(
-            $chart,
+            $chart, 
             $this->chartDataByDays($data, $categories, $request, false),
             $this->chartDataByDays($data_prev, $categories, $request, true)
         );
@@ -1028,7 +1013,7 @@ class ReportsController extends Controller
         }
 
         // Get other users metrics.
-
+        
         // Closed.
         $query = Thread::where('threads.type', Thread::TYPE_LINEITEM)
             ->where('threads.action_type', Thread::ACTION_TYPE_STATUS_CHANGED)
@@ -1182,7 +1167,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-
+        
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -1198,7 +1183,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-
+        
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -1214,7 +1199,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-
+        
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -1230,7 +1215,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-
+        
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -1246,7 +1231,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-
+        
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -1342,7 +1327,7 @@ class ReportsController extends Controller
         $query = \Modules\TimeTracking\Entities\Timelog::rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'timelogs.conversation_id');
             });
-
+        
         $this->applyFilter($query, $request, $prev, 'timelogs.updated_at');
 
         return $query->sum('time_spent');
@@ -1357,7 +1342,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'timelogs.conversation_id');
             });
-
+        
         $this->applyFilter($query, $request, $prev, 'timelogs.updated_at');
 
         $timelogs = $query->get();
@@ -1380,7 +1365,7 @@ class ReportsController extends Controller
                 $join->on('conversations.id', '=', 'timelogs.conversation_id');
             })
             ->groupBy('timelogs.user_id');
-
+        
         $this->applyFilter($query, $request, false, 'timelogs.updated_at');
 
         $table_times = $query->get()->toArray();
@@ -1419,7 +1404,7 @@ class ReportsController extends Controller
             })
             //->where('time_spent', '>', 0)
             ->groupBy('timelogs.conversation_id');
-
+        
         $this->applyFilter($query, $request, false, 'timelogs.updated_at');
 
         $table_times = $query->get()->sortBy('time_spent')->reverse()->toArray();
@@ -1443,7 +1428,7 @@ class ReportsController extends Controller
                 $join->on('conversations.id', '=', 'timelogs.conversation_id');
             })
             ->groupBy('conversations.customer_id');
-
+        
         $this->applyFilter($query, $request, false, 'timelogs.updated_at');
 
         $table_times = $query->get()->sortBy('time_spent')->reverse()->toArray();

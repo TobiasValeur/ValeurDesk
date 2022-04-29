@@ -19,7 +19,10 @@ class SatRatingsController extends Controller
     {
         $mailbox = Mailbox::findOrFail($id);
 
-        return view('satratings::settings', ['mailbox' => $mailbox]);
+        return view('satratings::settings', [
+            'mailbox' => $mailbox,
+            'settings' => \SatRatingsHelper::getMailboxSettings($mailbox),
+        ]);
     }
 
     public function settingsSave($id, Request $request)
@@ -52,6 +55,12 @@ class SatRatingsController extends Controller
         }
 
         $mailbox->fill($request->all());
+
+        $meta = $mailbox->meta;
+        $meta['sr'] = [
+            'saving_mode' => $request->settings['saving_mode']
+        ];
+        $mailbox->meta = $meta;
 
         $mailbox->save();
 
@@ -143,18 +152,18 @@ class SatRatingsController extends Controller
 
         $trans = \SatRatingsHelper::getTranslations($mailbox);
 
-        $rating = (int)$rating;
-        if ($rating < 1 || $rating > 3) {
-            $rating = \SatRatingsHelper::RATING_GREAT;
+        $show_success_title = true;
+        if (\SatRatingsHelper::getMailboxSettings($mailbox)['saving_mode'] == \SatRatingsHelper::SAVING_MODE_INSTANT) {
+            \SatRatingsHelper::rate($thread, $rating);
+        } else {
+            $show_success_title = false;
         }
 
-        // We are saving rating right away
-        $thread->rating = $rating;
-        $thread->save();
-
-        \Eventy::action('satratings.rated', $thread, $rating);
-
-        return view('satratings::record', ['trans' => $trans, 'rating' => $rating]);
+        return view('satratings::record', [
+            'trans' => $trans,
+            'rating' => $rating,
+            'show_success_title' => $show_success_title,
+        ]);
     }
 
     /**
@@ -190,6 +199,10 @@ class SatRatingsController extends Controller
             $rating_changed = true;
         }
         $thread->save();
+
+        if (\SatRatingsHelper::getMailboxSettings($mailbox)['saving_mode'] == \SatRatingsHelper::SAVING_MODE_INSTANT) {
+            \Eventy::action('satratings.rated', $thread, $rating);
+        }
 
         \Eventy::action('satratings.feedback_sent', $thread, $rating, $thread->rating_comment, $rating_changed);
 

@@ -198,6 +198,9 @@ class SavedRepliesController extends Controller
                                 'customer'     => $conversation->customer,
                                 'user'         => $user,
                             ];
+                            if (strstr($saved_reply->text, '%custom_field.') && \Module::isActive('customfields')) {
+                                $replace_data['custom_fields'] = \Modules\CustomFields\Entities\CustomField::getCustomFieldsWithValues($conversation->mailbox->id, $request->conversation_id);
+                            }
                         }
                     }
 

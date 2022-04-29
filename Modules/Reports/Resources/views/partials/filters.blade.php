@@ -45,6 +45,8 @@
 	<div class="rpt-filter" data-toggle="tooltip" title="{{ __('Refresh') }}">
 		<button class="btn btn-primary" id="rpt-btn-loader"><i class="glyphicon glyphicon-refresh"></i></button>
 	</div>
+
+	@action('reports.filters_button_append')
 </div>
 
 @php
@@ -54,7 +56,7 @@
     <div class="rpt-filters">
         @foreach($custom_fields as $custom_field)
             <div class="rpt-filter rpt-cf-mailbox rpt-cf-mailbox-{{ $custom_field->mailbox_id }} hidden">
-                {{ $custom_field->name }}
+                <span class="rpt-cf-name">{{ $custom_field->name }}</span>
 
                 @if ($custom_field->type == CustomField::TYPE_DROPDOWN)
                     <select name="custom_field[{{ $custom_field->id }}]" class="form-control">

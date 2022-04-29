@@ -52,7 +52,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group margin-bottom-5">
                         <label for="ratings_text" class="col-sm-2 control-label">{{ __('Ratings Text') }}</label>
 
                         <div class="col-sm-9">
@@ -60,6 +60,22 @@
                             <textarea id="default_ratings_text" class="hidden">{{ SatRatingsHelper::DEFAULT_TEXT }}</textarea>
                             <div class="{{ $errors->has('ratings_text') ? ' has-error' : '' }}">
                                 @include('partials/field_error', ['field'=>'ratings_text'])
+                            </div>
+                            <a href="#" class="reset-trigger">{{ __('Reset to defaults') }}</a>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">{{ __('Saving Mode') }}</label>
+
+                        <div class="col-sm-6">
+                            <div class="control-group">
+                                <label class="radio" for="ratings_saving_mode_{{ SatRatingsHelper::SAVING_MODE_INSTANT }}">
+                                    <input type="radio" name="settings[saving_mode]" value="{{ SatRatingsHelper::SAVING_MODE_INSTANT }}" id="ratings_saving_mode_{{ SatRatingsHelper::SAVING_MODE_INSTANT }}" @if ($settings['saving_mode'] == SatRatingsHelper::SAVING_MODE_INSTANT) checked="checked" @endif> {!! __("Save rating immediately after one of the rating links is clicked in the email") !!}
+                                </label>
+                                <label class="radio" for="ratings_saving_mode_{{ SatRatingsHelper::SAVING_MODE_ON_SUBMIT }}">
+                                    <input type="radio" name="settings[saving_mode]" value="{{ SatRatingsHelper::SAVING_MODE_ON_SUBMIT }}" id="ratings_saving_mode_{{ SatRatingsHelper::SAVING_MODE_ON_SUBMIT }}" @if ($settings['saving_mode'] == SatRatingsHelper::SAVING_MODE_ON_SUBMIT) checked="checked" @endif> {!! __("Save rating after Send button is clicked on the rating page") !!}
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -69,8 +85,6 @@
                             <button type="submit" class="btn btn-primary">
                                 {{ __('Save') }}
                             </button>
-
-                            <a href="#" class="btn btn-link reset-trigger">{{ __('Reset to defaults') }}</a>
                         </div>
                     </div>
                 </form>

@@ -15,7 +15,7 @@
     "Enable Ratings": "Рейтинг включён",
     "Placement": "Положение",
     "Place ratings text :%tag_begin%above:%tag_end% mailbox signature.": "Поместить текст рейтинга :%tag_begin%над:%tag_end% подписью ящика.",
-    "Place ratings text :%tag_begin%below:%tag_end% mailbox signature.": "Поместить текст рейтинга :%tag_beginпод:%tag_end% подписью ящика.",
+    "Place ratings text :%tag_begin%below:%tag_end% mailbox signature.": "Поместить текст рейтинга :%tag_begin%под:%tag_end% подписью ящика.",
     "Reset to defaults": "Восстановить значения по умолчанию",
     "Reset to default values?": "Восстановить значения по умолчанию?",
     "Satisfaction Translations": "Переводы",
@@ -23,5 +23,8 @@
     "Header": "Заголовок",
     "Comment Box": "Поле для комментариев",
     "Send Button": "Кнопка отправить",
-    "Send Confirmation": "Подтверждение отправки"
+    "Send Confirmation": "Подтверждение отправки",
+    "Saving Mode": "Режим сохранения",
+    "Save rating immediately after one of the rating links is clicked in the email": "Сохранить рейтинг сразу после нажатия на одну из ссылок рейтинга в электронном письме",
+    "Save rating after Send button is clicked on the rating page": "Сохранять рейтинг после нажатия на кнопку Отправить на странице рейтинга"
 }

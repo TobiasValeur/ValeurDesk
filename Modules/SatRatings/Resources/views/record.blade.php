@@ -8,7 +8,9 @@
         <h2>{{ $trans['title'] }}</h2>
         <p>{{ $error }}</p>
     @else
-        <h1>{{ $trans['success_title'] }}</h1>
+        @if ($show_success_title)
+            <h1>{{ $trans['success_title'] }}</h1>
+        @endif
 
         <form class="margin-top" method="POST" action="">
         	{{ csrf_field() }}

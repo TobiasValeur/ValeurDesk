@@ -2,7 +2,6 @@
 
 namespace Modules\Reports\Providers;
 
-use Modules\Reports\Entities\Reports;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
@@ -39,19 +38,6 @@ class ReportsServiceProvider extends ServiceProvider
         $this->hooks();
     }
 
-    const PERM_VIEW_REPORTS = 50;
-
-    public static function canViewReports($user = null)
-    {
-        if (!$user) {
-            $user = auth()->user();
-        }
-        if (!$user) {
-            return false;
-        }
-        return $user->isAdmin() || $user->hasPermission(\Reports::PERM_VIEW_REPORTS);
-    }
-
     /**
      * Module hooks.
      */
@@ -73,7 +59,6 @@ class ReportsServiceProvider extends ServiceProvider
 
         // Add item to the mailbox menu
         \Eventy::addAction('menu.append', function($mailbox) {
-            //check permission
             if (\Reports::canViewReports()) {
                 echo \View::make('reports::partials/menu', [])->render();
             }
@@ -90,18 +75,6 @@ class ReportsServiceProvider extends ServiceProvider
             }
             return $menu;
         });
-
-        \Eventy::addFilter('user_permissions.list', function($list) {
-            $list[] = \Reports::PERM_VIEW_REPORTS;
-            return $list;
-        });
-
-        \Eventy::addFilter('user_permissions.name', function($name, $permission) {
-            if ($permission != \Reports::PERM_VIEW_REPORTS) {
-                return $name;
-            }
-            return __('Users are allowed to view reports');
-        }, 20, 2);
     }
 
     public static function getCustomFieldFilters()
@@ -114,7 +87,6 @@ class ReportsServiceProvider extends ServiceProvider
 
             if ($mailbox_ids) {
                 $custom_fields = \Modules\CustomFields\Entities\CustomField::whereIn('mailbox_id', $mailbox_ids)
-                    ->groupBy('name')
                     ->get();
             }
         }

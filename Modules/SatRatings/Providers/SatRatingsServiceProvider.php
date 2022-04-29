@@ -31,6 +31,9 @@ How would you rate my reply?
     const RATING_OKAY  = 2;
     const RATING_BAD   = 3;
 
+    const SAVING_MODE_INSTANT = 1;
+    const SAVING_MODE_ON_SUBMIT = 2;
+
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -168,6 +171,29 @@ How would you rate my reply?
         ]);
 
         return $text;
+    }
+
+    public static function rate($thread, $rating)
+    {
+        $rating = (int)$rating;
+        if ($rating < 1 || $rating > 3) {
+            $rating = \SatRatingsHelper::RATING_GREAT;
+        }
+
+        // We are saving rating right away
+        $thread->rating = $rating;
+        $thread->save();
+
+        \Eventy::action('satratings.rated', $thread, $rating);
+    }
+
+    public static function getMailboxSettings($mailbox)
+    {
+        $meta = $mailbox->meta['sr'] ?? [];
+        $settings = [];
+        $settings['saving_mode'] = $meta['saving_mode'] ?? self::SAVING_MODE_INSTANT;
+
+        return $settings;
     }
 
     /**

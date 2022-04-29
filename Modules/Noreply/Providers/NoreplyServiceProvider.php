@@ -151,7 +151,14 @@ class NoreplyServiceProvider extends ServiceProvider
 
         foreach ($emails as $noreply_email) {
             $noreply_email = str_replace('-', '\-?', $noreply_email);
-            $regex = '/.*'.$noreply_email.'*./i';
+            $noreply_email = str_replace('*', '.*', $noreply_email);
+            
+            if (!strstr($noreply_email, '@')) {
+                $regex = '/.*'.$noreply_email.'.*@.*/i';
+            } else {
+                $regex = '/^'.$noreply_email.'$/i';
+            }
+            
             if (preg_match($regex, $email)) {
                 return true;
             }

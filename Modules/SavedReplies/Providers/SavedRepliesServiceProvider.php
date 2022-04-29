@@ -105,6 +105,22 @@ class SavedRepliesServiceProvider extends ServiceProvider
 
             return $menu;
         });
+
+        \Eventy::addFilter('mail_vars.replace', function($vars, $data) {
+            if (!empty($data['custom_fields'])) {
+                foreach ($data['custom_fields'] as $custom_field) {
+                    $key = strtolower(preg_replace('/\s+/', '_', $custom_field['name']));
+                    $value = $custom_field->getAsText();
+                    if (!is_null($value)){
+                        $vars['{%custom_field.' . $key . '%}'] = $value;
+                    } else {
+                        $vars['{%custom_field.' . $key . '%}'] = "";
+                    }
+                }
+            }
+
+            return $vars;
+        }, 20, 2);
     }
 
     /**
