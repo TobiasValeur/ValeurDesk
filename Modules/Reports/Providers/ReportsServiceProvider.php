@@ -73,6 +73,7 @@ class ReportsServiceProvider extends ServiceProvider
 
         // Add item to the mailbox menu
         \Eventy::addAction('menu.append', function($mailbox) {
+            //check permission
             if (\Reports::canViewReports()) {
                 echo \View::make('reports::partials/menu', [])->render();
             }
