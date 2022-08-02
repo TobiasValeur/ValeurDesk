@@ -26,6 +26,6 @@ class Reports extends Model
         if (!$user) {
             return false;
         }
-        return $user->isAdmin() || $user->hasPermission(\Reports::PERM_VIEW_REPORTS);
+        return $user->isAdmin() || $user->hasPermission(Reports::PERM_VIEW_REPORTS);
     }
 }
