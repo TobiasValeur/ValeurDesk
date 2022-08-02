@@ -22,7 +22,7 @@ class SavedRepliesController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      * @return Response
@@ -32,7 +32,7 @@ class SavedRepliesController extends Controller
         $mailbox = Mailbox::findOrFail($id);
         //$this->authorize('index', $mailbox);
         //$this->authorize('updateMailboxSavedReplies', SavedReply::class);
-        
+
         $user = auth()->user();
         if (!SavedReply::userCanUpdateMailboxSavedReplies($user, $mailbox)) {
             \Helper::denyAccess();
@@ -69,7 +69,7 @@ class SavedRepliesController extends Controller
 
             // Create saved reply
             case 'create':
-                
+
                 $name = $request->name;
                 $text = $request->text;
 
@@ -88,7 +88,7 @@ class SavedRepliesController extends Controller
                 if (!$response['msg'] && !SavedReply::userCanUpdateMailboxSavedReplies($user, $mailbox)) {
                     $response['msg'] = __('Not enough permissions');
                 }
-                
+
                 // Check unique name.
                 if (!$response['msg']) {
                     $name_exists = SavedReply::where('mailbox_id', $request->mailbox_id)
@@ -125,7 +125,7 @@ class SavedRepliesController extends Controller
 
             // Update saved reply
             case 'update':
-                
+
                 $name = $request->name;
                 $text = $request->text;
 
@@ -144,7 +144,7 @@ class SavedRepliesController extends Controller
                 if (!$response['msg'] && !SavedReply::userCanUpdateMailboxSavedReplies($user, $saved_reply->mailbox)) {
                     $response['msg'] = __('Not enough permissions');
                 }
-                
+
                 // Check unique name.
                 if (!$response['msg']) {
                     $name_exists = SavedReply::where('mailbox_id', $saved_reply->mailbox_id)
@@ -175,13 +175,13 @@ class SavedRepliesController extends Controller
 
             // Get saved reply
             case 'get':
-               
+
                 $saved_reply = SavedReply::find($request->saved_reply_id);
 
                 if (!$saved_reply) {
                     $response['msg'] = __('Saved reply not found');
                 }
-                
+
                 if (!$response['msg'] && !$saved_reply->mailbox->userHasAccess($user->id)) {
                     $response['msg'] = __('Not enough permissions');
                 }
@@ -213,13 +213,13 @@ class SavedRepliesController extends Controller
 
             // Delete saved reply
             case 'delete':
-               
+
                 $saved_reply = SavedReply::find($request->saved_reply_id);
 
                 if (!$saved_reply) {
                     $response['msg'] = __('Saved reply not found');
                 }
-                
+
                 if (!$response['msg'] && !SavedReply::userCanUpdateMailboxSavedReplies($user, $saved_reply->mailbox)) {
                     $response['msg'] = __('Not enough permissions');
                 }
@@ -227,7 +227,7 @@ class SavedRepliesController extends Controller
                 if (!$response['msg']) {
                     // Delete refereces to this save reply.
                     SavedReply::where('parent_saved_reply_id', $saved_reply->id)->update(['parent_saved_reply_id' => null]);
-                    
+
                     $saved_reply->delete();
 
                     $response['status'] = 'success';
@@ -237,7 +237,7 @@ class SavedRepliesController extends Controller
 
             // Update saved reply
             case 'update_sort_order':
-                
+
                 $saved_replies = SavedReply::whereIn('id', $request->saved_replies)->select('id', 'mailbox_id', 'sort_order')->get();
 
                 if (count($saved_replies)) {

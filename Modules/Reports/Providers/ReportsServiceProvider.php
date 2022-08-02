@@ -4,6 +4,7 @@ namespace Modules\Reports\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Modules\Reports\Entities\Reports;
 
 // Module alias
 define('REPORTS_MODULE', 'reports');
@@ -59,13 +60,13 @@ class ReportsServiceProvider extends ServiceProvider
 
         // Add item to the mailbox menu
         \Eventy::addAction('menu.append', function($mailbox) {
-            if (\Reports::canViewReports()) {
+            if (Reports::canViewReports()) {
                 echo \View::make('reports::partials/menu', [])->render();
             }
         });
 
         \Eventy::addFilter('menu.selected', function($menu) {
-            if (\Reports::canViewReports()) {
+            if (Reports::canViewReports()) {
                 $menu['reports'] = [
                     'reports.conversations',
                     'reports.productivity',

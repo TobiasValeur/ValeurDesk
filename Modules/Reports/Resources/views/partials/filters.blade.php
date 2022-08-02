@@ -5,7 +5,7 @@
 	</div>--}}
 
 	<div class="rpt-filter">
-		{{ __('Type') }} 
+		{{ __('Type') }}
 		<select class="form-control" name="type">
 			<option value=""></option>
 			<option value="{{ App\Conversation::TYPE_EMAIL }}">{{ __('Email') }}</option>
@@ -14,9 +14,8 @@
 		</select>
 	</div>
 	<div class="rpt-filter">
-		{{ __('Mailbox') }} 
+		{{ __('Mailbox') }}
 		<select class="form-control" name="mailbox">
-			<option value=""></option>
 			@foreach (Auth::user()->mailboxesCanView(true) as $mailbox)
 				<option value="{{ $mailbox->id }}">{{ $mailbox->name }}</option>
 			@endforeach
@@ -24,7 +23,7 @@
 	</div>
 	@if (\Module::isActive('tags'))
 		<div class="rpt-filter">
-    		{{ __('Tag') }} 
+    		{{ __('Tag') }}
     		<select class="form-control" name="tag">
     			<option value=""></option>
     			@foreach (Modules\Tags\Entities\Tag::orderBy('name')->get() as $tag)
