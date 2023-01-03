@@ -31,6 +31,7 @@ class KnowledgeBaseController extends Controller
             'site_name' => $meta_settings['site_name'] ?? __('{%mailbox.name%} Knowledge Base'),
             'footer' => $meta_settings['footer'] ?? '&copy; {%year%} {%mailbox.name%}',
             'menu' => $meta_settings['menu'] ?? '',
+            'password' => $meta_settings['password'] ?? '',
             'locales' => $kb_locales,
         ];
 

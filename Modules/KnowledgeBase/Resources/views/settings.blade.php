@@ -81,6 +81,17 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label class="col-sm-2 control-label">{{ __('Password') }}</label>
+
+                <div class="col-sm-6">
+                    <input type="password" class="form-control" name="settings[password]" value="{{ $settings['password'] }}">
+                    <p class="form-help">
+                        If empty, open to public.
+                    </p>
+                </div>
+            </div>
+
             <div class="form-group margin-top">
                 <div class="col-sm-6 col-sm-offset-2">
                     <button type="submit" name="kb_action" value="save_settings" class="btn btn-primary">

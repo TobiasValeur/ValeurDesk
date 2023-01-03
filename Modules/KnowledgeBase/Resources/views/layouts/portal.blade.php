@@ -35,8 +35,11 @@
 	</head>
     <body @yield('body_attrs')>
     	<div id="app">
+			@if ((!isset($mailbox->meta['kb']['password']) || $mailbox->meta['kb']['password'] == '') || (!empty(app('request')->input('password')) && !empty($mailbox->meta['kb']['password']) && app('request')->input('password') == $mailbox->meta['kb']['password']) )
+			
 	    	<nav class="navbar navbar-default navbar-static-top">
 	            <div class="container">
+				
 	                <div class="navbar-header">
 
 	                    <!-- Collapsed Hamburger -->
@@ -107,6 +110,26 @@
 			<div class="footer">
                 {!! strtr($mailbox->meta['kb']['footer'] ?? '&copy; {%year%} {%mailbox.name%}', ['{%year%}' => date('Y'), '{%mailbox.name%}' => $mailbox->name]) !!}
             </div>
+			@else
+			<div class="container">
+				<div class="row d-flex">
+					<div class="" style="width: 350px; margin: 0 auto;">
+					<h2>{{ \Kb::getKbName($mailbox) }}</h2>
+					<h3 style="padding: 12px 0;">This page requires a password to continue</h3>
+					@if (!empty(app('request')->input('password')))
+					<p class="text-danger" style="font-weight:bold;font-size:130%;">Wrong password entered!</p>
+					@endif
+					<form action="" method="GET">
+						<div class="form-group">
+							<label for="exampleInputPassword1">Password</label>
+							<input type="password" class="form-control" id="password" placeholder="Password" name="password">
+						</div>
+						<button type="submit" class="btn btn-primary">Login</button>
+					</form>
+					</div>
+				</div>
+			</div>
+			@endif
 	    </div>
 
 	    @action('layout.body_bottom')
