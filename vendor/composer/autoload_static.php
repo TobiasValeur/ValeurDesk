@@ -52,6 +52,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
             'Symfony\\Polyfill\\Php70\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Component\\VarDumper\\Dumper\\' => 35,
             'Symfony\\Component\\VarDumper\\Cloner\\' => 35,
             'Symfony\\Component\\VarDumper\\' => 28,
             'Symfony\\Component\\Translation\\' => 30,
@@ -131,6 +132,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
             'Illuminate\\Cache\\Console\\' => 25,
             'Illuminate\\Cache\\' => 17,
             'Illuminate\\Broadcasting\\Broadcasters\\' => 37,
+            'Illuminate\\Auth\\Middleware\\' => 27,
             'Illuminate\\Auth\\' => 16,
             'Illuminate\\' => 11,
         ),
@@ -156,6 +158,8 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'D' => 
         array (
             'Dotenv\\' => 7,
+            'Doctrine\\Deprecations\\' => 22,
+            'Doctrine\\DBAL\\Schema\\' => 21,
             'Doctrine\\DBAL\\Driver\\' => 21,
             'Doctrine\\DBAL\\' => 14,
             'Doctrine\\Common\\Inflector\\' => 26,
@@ -163,6 +167,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
             'Doctrine\\Common\\' => 16,
             'Devfactory\\Minify\\Providers\\' => 28,
             'Devfactory\\Minify\\' => 18,
+            'DebugBar\\DataFormatter\\' => 23,
             'DebugBar\\' => 9,
         ),
         'C' => 
@@ -231,6 +236,10 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Symfony\\Component\\VarDumper\\Dumper\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/overrides/symfony/var-dumper/Dumper',
         ),
         'Symfony\\Component\\VarDumper\\Cloner\\' => 
         array (
@@ -406,7 +415,8 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         ),
         'Javoscript\\MacroableModels\\' => 
         array (
-            0 => __DIR__ . '/..' . '/javoscript/laravel-macroable-models/src',
+            0 => __DIR__ . '/../..' . '/overrides/javoscript/laravel-macroable-models/src',
+            1 => __DIR__ . '/..' . '/javoscript/laravel-macroable-models/src',
         ),
         'JakubOnderka\\PhpConsoleHighlighter\\' => 
         array (
@@ -472,6 +482,10 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         array (
             0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Broadcasting/Broadcasters',
         ),
+        'Illuminate\\Auth\\Middleware\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Auth/Middleware',
+        ),
         'Illuminate\\Auth\\' => 
         array (
             0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Auth',
@@ -487,7 +501,8 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+            0 => __DIR__ . '/../..' . '/overrides/guzzlehttp/psr7/src',
+            1 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
         'GuzzleHttp\\Promise\\' => 
         array (
@@ -515,6 +530,14 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
             0 => __DIR__ . '/../..' . '/overrides/vlucas/phpdotenv/src',
             1 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
         ),
+        'Doctrine\\Deprecations\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/deprecations/lib/Doctrine/Deprecations',
+        ),
+        'Doctrine\\DBAL\\Schema\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/overrides/doctrine/dbal/lib/Doctrine/DBAL/Schema',
+        ),
         'Doctrine\\DBAL\\Driver\\' => 
         array (
             0 => __DIR__ . '/../..' . '/overrides/doctrine/dbal/lib/Doctrine/DBAL/Driver',
@@ -533,7 +556,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         ),
         'Doctrine\\Common\\' => 
         array (
-            0 => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common',
+            0 => __DIR__ . '/..' . '/doctrine/event-manager/src',
         ),
         'Devfactory\\Minify\\Providers\\' => 
         array (
@@ -542,6 +565,10 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Devfactory\\Minify\\' => 
         array (
             0 => __DIR__ . '/..' . '/devfactory/minify/src',
+        ),
+        'DebugBar\\DataFormatter\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/overrides/maximebf/debugbar/src/DataFormatter/DataFormatter',
         ),
         'DebugBar\\' => 
         array (
@@ -707,7 +734,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'App\\Http\\Controllers\\CustomersController' => __DIR__ . '/../..' . '/app/Http/Controllers/CustomersController.php',
         'App\\Http\\Controllers\\MailboxesController' => __DIR__ . '/../..' . '/app/Http/Controllers/MailboxesController.php',
         'App\\Http\\Controllers\\ModulesController' => __DIR__ . '/../..' . '/app/Http/Controllers/ModulesController.php',
-        'App\\Http\\Controllers\\PublicController' => __DIR__ . '/../..' . '/app/Http/Controllers/PublicController.php',
+        'App\\Http\\Controllers\\OpenController' => __DIR__ . '/../..' . '/app/Http/Controllers/OpenController.php',
         'App\\Http\\Controllers\\SecureController' => __DIR__ . '/../..' . '/app/Http/Controllers/SecureController.php',
         'App\\Http\\Controllers\\SettingsController' => __DIR__ . '/../..' . '/app/Http/Controllers/SettingsController.php',
         'App\\Http\\Controllers\\SystemController' => __DIR__ . '/../..' . '/app/Http/Controllers/SystemController.php',
@@ -766,9 +793,12 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'App\\Module' => __DIR__ . '/../..' . '/app/Module.php',
         'App\\Notifications\\BroadcastNotification' => __DIR__ . '/../..' . '/app/Notifications/BroadcastNotification.php',
         'App\\Notifications\\WebsiteNotification' => __DIR__ . '/../..' . '/app/Notifications/WebsiteNotification.php',
+        'App\\Observers\\AttachmentObserver' => __DIR__ . '/../..' . '/app/Observers/AttachmentObserver.php',
         'App\\Observers\\ConversationObserver' => __DIR__ . '/../..' . '/app/Observers/ConversationObserver.php',
+        'App\\Observers\\CustomerObserver' => __DIR__ . '/../..' . '/app/Observers/CustomerObserver.php',
         'App\\Observers\\DatabaseNotificationObserver' => __DIR__ . '/../..' . '/app/Observers/DatabaseNotificationObserver.php',
         'App\\Observers\\EmailObserver' => __DIR__ . '/../..' . '/app/Observers/EmailObserver.php',
+        'App\\Observers\\FollowerObserver' => __DIR__ . '/../..' . '/app/Observers/FollowerObserver.php',
         'App\\Observers\\MailboxObserver' => __DIR__ . '/../..' . '/app/Observers/MailboxObserver.php',
         'App\\Observers\\SendLogObserver' => __DIR__ . '/../..' . '/app/Observers/SendLogObserver.php',
         'App\\Observers\\ThreadObserver' => __DIR__ . '/../..' . '/app/Observers/ThreadObserver.php',
@@ -905,6 +935,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'CssWhitesmithsFormatter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
         'CustomersTableSeeder' => __DIR__ . '/../..' . '/database/seeds/CustomersTableSeeder.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
+        'DebugBar\\DataFormatter\\DataFormatter' => __DIR__ . '/../..' . '/overrides/maximebf/debugbar/src/DebugBar/DataFormatter/DataFormatter.php',
         'DebugBar\\DebugBar' => __DIR__ . '/../..' . '/overrides/maximebf/debugbar/src/DebugBar/DebugBar.php',
         'Devfactory\\Minify\\Contracts\\MinifyInterface' => __DIR__ . '/..' . '/devfactory/minify/src/Contracts/MinifyInterface.php',
         'Devfactory\\Minify\\Exceptions\\CannotRemoveFileException' => __DIR__ . '/..' . '/devfactory/minify/src/Exceptions/CannotRemoveFileException.php',
@@ -946,9 +977,9 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Doctrine\\Common\\Cache\\WinCacheCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/WinCacheCache.php',
         'Doctrine\\Common\\Cache\\XcacheCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/XcacheCache.php',
         'Doctrine\\Common\\Cache\\ZendDataCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/ZendDataCache.php',
-        'Doctrine\\Common\\EventArgs' => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common/EventArgs.php',
-        'Doctrine\\Common\\EventManager' => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common/EventManager.php',
-        'Doctrine\\Common\\EventSubscriber' => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common/EventSubscriber.php',
+        'Doctrine\\Common\\EventArgs' => __DIR__ . '/..' . '/doctrine/event-manager/src/EventArgs.php',
+        'Doctrine\\Common\\EventManager' => __DIR__ . '/..' . '/doctrine/event-manager/src/EventManager.php',
+        'Doctrine\\Common\\EventSubscriber' => __DIR__ . '/..' . '/doctrine/event-manager/src/EventSubscriber.php',
         'Doctrine\\Common\\Inflector\\Inflector' => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector/Inflector.php',
         'Doctrine\\Common\\Lexer\\AbstractLexer' => __DIR__ . '/..' . '/doctrine/lexer/lib/Doctrine/Common/Lexer/AbstractLexer.php',
         'Doctrine\\DBAL\\Abstraction\\Result' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/Abstraction/Result.php',
@@ -1178,7 +1209,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Doctrine\\DBAL\\Schema\\Index' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/Schema/Index.php',
         'Doctrine\\DBAL\\Schema\\MySqlSchemaManager' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/Schema/MySqlSchemaManager.php',
         'Doctrine\\DBAL\\Schema\\OracleSchemaManager' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/Schema/OracleSchemaManager.php',
-        'Doctrine\\DBAL\\Schema\\PostgreSqlSchemaManager' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/Schema/PostgreSqlSchemaManager.php',
+        'Doctrine\\DBAL\\Schema\\PostgreSqlSchemaManager' => __DIR__ . '/../..' . '/overrides/doctrine/dbal/lib/Doctrine/DBAL/Schema/PostgreSqlSchemaManager.php',
         'Doctrine\\DBAL\\Schema\\SQLAnywhereSchemaManager' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/Schema/SQLAnywhereSchemaManager.php',
         'Doctrine\\DBAL\\Schema\\SQLServerSchemaManager' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/Schema/SQLServerSchemaManager.php',
         'Doctrine\\DBAL\\Schema\\Schema' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/Schema/Schema.php',
@@ -1257,6 +1288,8 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Doctrine\\DBAL\\Types\\VarDateTimeType' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/Types/VarDateTimeType.php',
         'Doctrine\\DBAL\\Version' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/Version.php',
         'Doctrine\\DBAL\\VersionAwarePlatformDriver' => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL/VersionAwarePlatformDriver.php',
+        'Doctrine\\Deprecations\\Deprecation' => __DIR__ . '/..' . '/doctrine/deprecations/lib/Doctrine/Deprecations/Deprecation.php',
+        'Doctrine\\Deprecations\\PHPUnit\\VerifyDeprecations' => __DIR__ . '/..' . '/doctrine/deprecations/lib/Doctrine/Deprecations/PHPUnit/VerifyDeprecations.php',
         'Dotenv\\Dotenv' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Dotenv.php',
         'Dotenv\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Exception/ExceptionInterface.php',
         'Dotenv\\Exception\\InvalidCallbackException' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Exception/InvalidCallbackException.php',
@@ -1382,7 +1415,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'GuzzleHttp\\Psr7\\DroppingStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/DroppingStream.php',
         'GuzzleHttp\\Psr7\\FnStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/FnStream.php',
         'GuzzleHttp\\Psr7\\InflateStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/InflateStream.php',
-        'GuzzleHttp\\Psr7\\LazyOpenStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/LazyOpenStream.php',
+        'GuzzleHttp\\Psr7\\LazyOpenStream' => __DIR__ . '/../..' . '/overrides/guzzlehttp/psr7/src/LazyOpenStream.php',
         'GuzzleHttp\\Psr7\\LimitStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/LimitStream.php',
         'GuzzleHttp\\Psr7\\MessageTrait' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/MessageTrait.php',
         'GuzzleHttp\\Psr7\\MultipartStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/MultipartStream.php',
@@ -1462,7 +1495,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'HTMLPurifier_AttrTransform_Lang' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrTransform/Lang.php',
         'HTMLPurifier_AttrTransform_Length' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrTransform/Length.php',
         'HTMLPurifier_AttrTransform_Name' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrTransform/Name.php',
-        'HTMLPurifier_AttrTransform_NameSync' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrTransform/NameSync.php',
+        'HTMLPurifier_AttrTransform_NameSync' => __DIR__ . '/../..' . '/overrides/ezyang/htmlpurifier/library/HTMLPurifier/AttrTransform/NameSync.php',
         'HTMLPurifier_AttrTransform_Nofollow' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrTransform/Nofollow.php',
         'HTMLPurifier_AttrTransform_SafeEmbed' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrTransform/SafeEmbed.php',
         'HTMLPurifier_AttrTransform_SafeObject' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrTransform/SafeObject.php',
@@ -1569,7 +1602,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'HTMLPurifier_Language' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/Language.php',
         'HTMLPurifier_LanguageFactory' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/LanguageFactory.php',
         'HTMLPurifier_Length' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/Length.php',
-        'HTMLPurifier_Lexer' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/Lexer.php',
+        'HTMLPurifier_Lexer' => __DIR__ . '/../..' . '/overrides/ezyang/htmlpurifier/library/HTMLPurifier/Lexer.php',
         'HTMLPurifier_Lexer_DOMLex' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/Lexer/DOMLex.php',
         'HTMLPurifier_Lexer_DirectLex' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/Lexer/DirectLex.php',
         'HTMLPurifier_Lexer_PH5P' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/Lexer/PH5P.php',
@@ -1658,7 +1691,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Illuminate\\Auth\\Events\\Validated' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Auth/Events/Validated.php',
         'Illuminate\\Auth\\GenericUser' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/GenericUser.php',
         'Illuminate\\Auth\\GuardHelpers' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/GuardHelpers.php',
-        'Illuminate\\Auth\\Middleware\\Authenticate' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php',
+        'Illuminate\\Auth\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php',
         'Illuminate\\Auth\\Middleware\\AuthenticateWithBasicAuth' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php',
         'Illuminate\\Auth\\Middleware\\Authorize' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Middleware/Authorize.php',
         'Illuminate\\Auth\\Notifications\\ResetPassword' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Notifications/ResetPassword.php',
@@ -2350,7 +2383,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Illuminate\\Translation\\TranslationServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Translation/TranslationServiceProvider.php',
         'Illuminate\\Translation\\Translator' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Translation/Translator.php',
         'Illuminate\\Validation\\ClosureValidationRule' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Validation/ClosureValidationRule.php',
-        'Illuminate\\Validation\\Concerns\\FormatsMessages' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Validation/Concerns/FormatsMessages.php',
+        'Illuminate\\Validation\\Concerns\\FormatsMessages' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Validation/Concerns/FormatsMessages.php',
         'Illuminate\\Validation\\Concerns\\ReplacesAttributes' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Validation/Concerns/ReplacesAttributes.php',
         'Illuminate\\Validation\\Concerns\\ValidatesAttributes' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Validation/Concerns/ValidatesAttributes.php',
         'Illuminate\\Validation\\DatabasePresenceVerifier' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Validation/DatabasePresenceVerifier.php',
@@ -2409,7 +2442,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'JakubOnderka\\PhpConsoleColor\\InvalidStyleException' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/InvalidStyleException.php',
         'JakubOnderka\\PhpConsoleHighlighter\\Highlighter' => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src/Highlighter.php',
         'Javoscript\\MacroableModels\\Facades\\MacroableModels' => __DIR__ . '/..' . '/javoscript/laravel-macroable-models/src/Facades/MacroableModels.php',
-        'Javoscript\\MacroableModels\\MacroableModels' => __DIR__ . '/..' . '/javoscript/laravel-macroable-models/src/MacroableModels.php',
+        'Javoscript\\MacroableModels\\MacroableModels' => __DIR__ . '/../..' . '/overrides/javoscript/laravel-macroable-models/src/MacroableModels.php',
         'Javoscript\\MacroableModels\\MacroableModelsServiceProvider' => __DIR__ . '/..' . '/javoscript/laravel-macroable-models/src/MacroableModelsServiceProvider.php',
         'JsonSerializable' => __DIR__ . '/..' . '/nesbot/carbon/src/JsonSerializable.php',
         'Laravel\\Tinker\\ClassAliasAutoloader' => __DIR__ . '/..' . '/laravel/tinker/src/ClassAliasAutoloader.php',
@@ -2474,9 +2507,6 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Mews\\Purifier\\Facades\\Purifier' => __DIR__ . '/..' . '/mews/purifier/src/Facades/Purifier.php',
         'Mews\\Purifier\\Purifier' => __DIR__ . '/..' . '/mews/purifier/src/Purifier.php',
         'Mews\\Purifier\\PurifierServiceProvider' => __DIR__ . '/..' . '/mews/purifier/src/PurifierServiceProvider.php',
-        'Modules\\SampleModule\\Database\\Seeders\\SampleModuleDatabaseSeeder' => __DIR__ . '/../..' . '/Modules/SampleModule/Database/Seeders/SampleModuleDatabaseSeeder.php',
-        'Modules\\SampleModule\\Http\\Controllers\\SampleModuleController' => __DIR__ . '/../..' . '/Modules/SampleModule/Http/Controllers/SampleModuleController.php',
-        'Modules\\SampleModule\\Providers\\SampleModuleServiceProvider' => __DIR__ . '/../..' . '/Modules/SampleModule/Providers/SampleModuleServiceProvider.php',
         'Monolog\\ErrorHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/ErrorHandler.php',
         'Monolog\\Formatter\\ChromePHPFormatter' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Formatter/ChromePHPFormatter.php',
         'Monolog\\Formatter\\ElasticaFormatter' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Formatter/ElasticaFormatter.php',
@@ -3133,7 +3163,12 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Spatie\\String\\Integrations\\Underscore' => __DIR__ . '/..' . '/spatie/string/src/Integrations/Underscore.php',
         'Spatie\\String\\Str' => __DIR__ . '/../..' . '/overrides/spatie/string/src/Str.php',
         'Swift_MailTransport' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/MailTransport.php',
+        'Swift_Message' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Message.php',
+        'Swift_MimePart' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/MimePart.php',
         'Swift_Mime_ContentEncoder_Base64ContentEncoder' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Mime/ContentEncoder/Base64ContentEncoder.php',
+        'Swift_Mime_MimePart' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Mime/MimePart.php',
+        'Swift_SmtpTransport' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/SmtpTransport.php',
+        'Swift_SwiftException' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/SwiftException.php',
         'Swift_Transport_EsmtpTransport' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Transport/EsmtpTransport.php',
         'Swift_Transport_Esmtp_AuthHandler' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Transport/Esmtp/AuthHandler.php',
         'Swift_Transport_MailInvoker' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Transport/MailInvoker.php',
@@ -3689,7 +3724,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Symfony\\Component\\VarDumper\\Dumper\\AbstractDumper' => __DIR__ . '/..' . '/symfony/var-dumper/Dumper/AbstractDumper.php',
         'Symfony\\Component\\VarDumper\\Dumper\\CliDumper' => __DIR__ . '/..' . '/symfony/var-dumper/Dumper/CliDumper.php',
         'Symfony\\Component\\VarDumper\\Dumper\\DataDumperInterface' => __DIR__ . '/..' . '/symfony/var-dumper/Dumper/DataDumperInterface.php',
-        'Symfony\\Component\\VarDumper\\Dumper\\HtmlDumper' => __DIR__ . '/..' . '/symfony/var-dumper/Dumper/HtmlDumper.php',
+        'Symfony\\Component\\VarDumper\\Dumper\\HtmlDumper' => __DIR__ . '/../..' . '/overrides/symfony/var-dumper/Dumper/HtmlDumper.php',
         'Symfony\\Component\\VarDumper\\Exception\\ThrowingCasterException' => __DIR__ . '/..' . '/symfony/var-dumper/Exception/ThrowingCasterException.php',
         'Symfony\\Component\\VarDumper\\Test\\VarDumperTestTrait' => __DIR__ . '/..' . '/symfony/var-dumper/Test/VarDumperTestTrait.php',
         'Symfony\\Component\\VarDumper\\VarDumper' => __DIR__ . '/..' . '/symfony/var-dumper/VarDumper.php',

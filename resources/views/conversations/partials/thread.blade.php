@@ -16,8 +16,8 @@
             @if (Auth::user()->isAdmin())
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     @action('thread.menu', $thread)
-                    <li><a href="{{ route('conversations.ajax_html', ['action' =>
-                        'send_log']) }}?thread_id={{ $thread->id }}" title="{{ __("View outgoing emails") }}" data-trigger="modal" data-modal-title="{{ __("Outgoing Emails") }}" data-modal-size="lg">{{ __("Outgoing Emails") }}</a></li>
+                    <li><a href="{{ route('conversations.ajax_html', array_merge(['action' =>
+                        'send_log'], \Request::all(), ['thread_id' => $thread->id])) }}" title="{{ __("View outgoing emails") }}" data-trigger="modal" data-modal-title="{{ __("Outgoing Emails") }}" data-modal-size="lg">{{ __("Outgoing Emails") }}</a></li>
                     @action('thread.menu.append', $thread)
                 </ul>
             @endif
@@ -220,8 +220,8 @@
                 @if ($thread->isSendStatusError())
                         <div class="alert alert-danger alert-light">
                             <div>
-                                <strong>{{ __('Message not sent to customer') }}</strong> (<a href="{{ route('conversations.ajax_html', ['action' =>
-                        'send_log']) }}?thread_id={{ $thread->id }}" data-trigger="modal" data-modal-title="{{ __("Outgoing Emails") }}" data-modal-size="lg">{{ __('View log') }}</a>)
+                                <strong>{{ __('Message not sent to customer') }}</strong> (<a href="{{ route('conversations.ajax_html', array_merge(['action' =>
+                        'send_log'], \Request::all(), ['thread_id' => $thread->id]) ) }}" data-trigger="modal" data-modal-title="{{ __("Outgoing Emails") }}" data-modal-size="lg">{{ __('View log') }}</a>)
                             </div>
 
                             @if (!empty($send_status_data['bounced_by_thread']) && !empty($send_status_data['bounced_by_conversation']))
@@ -247,7 +247,7 @@
                     <div class="alert alert-info">
                         {{ __('This is a forwarded conversation.') }}
                         {!! __('Original conversation: :forward_parent_conversation_number', [
-                        'forward_parent_conversation_number' => '<a href="'.route('conversations.view', ['id' => $thread->getMeta('forward_parent_conversation_id')]).'#thread-'.$thread->getMeta('forward_parent_thread_id').'">#'.$thread->getMeta('forward_parent_conversation_number').'</a>'
+                        'forward_parent_conversation_number' => '<a href="'.route('conversations.view', ['id' => $thread->getMetaFw(App\Thread::META_FORWARD_PARENT_CONVERSATION_ID)]).'#thread-'.$thread->getMetaFw(App\Thread::META_FORWARD_PARENT_THREAD_ID).'">#'.$thread->getMetaFw(App\Thread::META_FORWARD_PARENT_CONVERSATION_NUMBER).'</a>'
                         ]) !!}
                     </div>
                 @endif
@@ -255,7 +255,7 @@
                     <div class="alert alert-note">
                         {!! __(':person forwarded this conversation. Forwarded conversation: :forward_child_conversation_number', [
                         'person' => ucfirst($thread->getForwardByFullName()),
-                        'forward_child_conversation_number' => '<a href="'.route('conversations.view', ['id' => $thread->getMeta('forward_child_conversation_id')]).'">#'.$thread->getMeta('forward_child_conversation_number').'</a>'
+                        'forward_child_conversation_number' => '<a href="'.route('conversations.view', ['id' => $thread->getMetaFw(App\Thread::META_FORWARD_CHILD_CONVERSATION_ID)]).'">#'.$thread->getMetaFw(App\Thread::META_FORWARD_CHILD_CONVERSATION_NUMBER).'</a>'
                         ]) !!}
                     </div>
                 @endif
@@ -287,16 +287,22 @@
                 @if (Auth::user()->can('edit', $thread))
                     <li><a href="#" title="" class="thread-edit-trigger" role="button">{{ __("Edit") }}</a></li>
                 @endif
+                @if ($thread->isNote() && !$thread->first && Auth::user()->can('delete', $thread))
+                    <li><a href="#" class="thread-delete-trigger" role="button" data-loading-text="{{ __("Delete") }}…">{{ __("Delete") }}</a></li>
+                @endif
                 {{--<li><a href="javascript:alert('todo: implement hiding threads');void(0);" title="" class="thread-hide-trigger">{{ __("Hide") }} (todo)</a></li>--}}
                 <li><a href="{{ route('conversations.create', ['mailbox_id' => $mailbox->id]) }}?from_thread_id={{ $thread->id }}" title="{{ __("Start a conversation from this thread") }}" class="new-conv" role="button">{{ __("New Conversation") }}</a></li>
+                @if ($thread->isCustomerMessage())
+                    <li><a href="{{ route('conversations.clone_conversation', ['mailbox_id' => $mailbox->id, 'from_thread_id' => $thread->id]) }}" title="{{ __("Clone a conversation from this thread") }}" class="new-conv" role="button">{{ __("Clone Conversation") }}</a></li>
+                @endif
                 @action('thread.menu', $thread)
                 @if (Auth::user()->isAdmin())
-                    <li><a href="{{ route('conversations.ajax_html', ['action' =>
-                        'send_log']) }}?thread_id={{ $thread->id }}" title="{{ __("View outgoing emails") }}" data-trigger="modal" data-modal-title="{{ __("Outgoing Emails") }}" data-modal-size="lg" role="button">{{ __("Outgoing Emails") }}</a></li>
+                    <li><a href="{{ route('conversations.ajax_html', array_merge(['action' =>
+                        'send_log'], \Request::all(), ['thread_id' => $thread->id])) }}" title="{{ __("View outgoing emails") }}" data-trigger="modal" data-modal-title="{{ __("Outgoing Emails") }}" data-modal-size="lg" role="button">{{ __("Outgoing Emails") }}</a></li>
                 @endif
                 @if ($thread->isReply())
-                    <li><a href="{{ route('conversations.ajax_html', ['action' =>
-                        'show_original']) }}?thread_id={{ $thread->id }}" title="{{ __("Show original message") }}" data-trigger="modal" data-modal-title="{{ __("Original Message") }}" data-modal-fit="true" data-modal-size="lg" role="button">{{ __("Show Original") }}</a></li>
+                    <li><a href="{{ route('conversations.ajax_html', array_merge(['action' =>
+                        'show_original'], \Request::all(), ['thread_id' => $thread->id])) }}" title="{{ __("Show original message") }}" data-trigger="modal" data-modal-title="{{ __("Original Message") }}" data-modal-fit="true" data-modal-size="lg" role="button">{{ __("Show Original") }}</a></li>
                 @endif
                 @if ($thread->isReply() || $thread->isNote())
                     <li><a href="{{ \Request::getRequestUri() }}&amp;print_thread_id={{ $thread->id }}&amp;print=1" target="_blank" role="button">{{ __("Print") }}</a></li>

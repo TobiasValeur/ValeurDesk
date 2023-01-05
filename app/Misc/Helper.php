@@ -26,6 +26,11 @@ class Helper
     const QUEUE_DEFAULT = 'default';
 
     /**
+     * Limit for IN queries.
+     */
+    const IN_LIMIT = 1000;
+
+    /**
      * Stores list of global entities (for caching).
      */
     public static $global_entities = [];
@@ -148,6 +153,9 @@ class Helper
         ],
         'ar-BH' => ['name'          => 'العربية',
                     'name_en'       => 'Arabic (Bahrain)',
+        ],
+        'az' => ['name'          => 'Azerbaijani',
+                    'name_en'       => 'Azerbaijani',
         ],
         'eu' => ['name'          => 'Euskara',
                  'name_en'       => 'Basque',
@@ -1187,45 +1195,46 @@ class Helper
     }
 
     /**
+     * It looks like this is not used anywhere.
      * Json encode to avoid "Unable to JSON encode payload. Error code: 5"
      */
-    public static function jsonEncodeSafe($value, $options = 0, $depth = 512, $utfErrorFlag = false)
-    {
-        $encoded = json_encode($value, $options, $depth);
-        switch (json_last_error()) {
-            case JSON_ERROR_NONE:
-                return $encoded;
-            // case JSON_ERROR_DEPTH:
-            //     return 'Maximum stack depth exceeded'; // or trigger_error() or throw new Exception()
-            // case JSON_ERROR_STATE_MISMATCH:
-            //     return 'Underflow or the modes mismatch'; // or trigger_error() or throw new Exception()
-            // case JSON_ERROR_CTRL_CHAR:
-            //     return 'Unexpected control character found';
-            // case JSON_ERROR_SYNTAX:
-            //     return 'Syntax error, malformed JSON'; // or trigger_error() or throw new Exception()
-            case JSON_ERROR_UTF8:
-                $clean = self::utf8ize($value);
-                if ($utfErrorFlag) {
-                    //return 'UTF8 encoding error'; // or trigger_error() or throw new Exception()
-                }
-                return self::jsonEncodeSafe($clean, $options, $depth, true);
-            // default:
-            //     return 'Unknown error'; // or trigger_error() or throw new Exception()
+    // public static function jsonEncodeSafe($value, $options = 0, $depth = 512, $utfErrorFlag = false)
+    // {
+    //     $encoded = json_encode($value, $options, $depth);
+    //     switch (json_last_error()) {
+    //         case JSON_ERROR_NONE:
+    //             return $encoded;
+    //         // case JSON_ERROR_DEPTH:
+    //         //     return 'Maximum stack depth exceeded'; // or trigger_error() or throw new Exception()
+    //         // case JSON_ERROR_STATE_MISMATCH:
+    //         //     return 'Underflow or the modes mismatch'; // or trigger_error() or throw new Exception()
+    //         // case JSON_ERROR_CTRL_CHAR:
+    //         //     return 'Unexpected control character found';
+    //         // case JSON_ERROR_SYNTAX:
+    //         //     return 'Syntax error, malformed JSON'; // or trigger_error() or throw new Exception()
+    //         case JSON_ERROR_UTF8:
+    //             $clean = self::utf8ize($value);
+    //             if ($utfErrorFlag) {
+    //                 //return 'UTF8 encoding error'; // or trigger_error() or throw new Exception()
+    //             }
+    //             return self::jsonEncodeSafe($clean, $options, $depth, true);
+    //         // default:
+    //         //     return 'Unknown error'; // or trigger_error() or throw new Exception()
 
-        }
-    }
+    //     }
+    // }
 
-    public static function utf8ize($mixed)
-    {
-        if (is_array($mixed)) {
-            foreach ($mixed as $key => $value) {
-                $mixed[$key] = self::utf8ize($value);
-            }
-        } else if (is_string ($mixed)) {
-            return utf8_encode($mixed);
-        }
-        return $mixed;
-    }
+    // public static function utf8ize($mixed)
+    // {
+    //     if (is_array($mixed)) {
+    //         foreach ($mixed as $key => $value) {
+    //             $mixed[$key] = self::utf8ize($value);
+    //         }
+    //     } else if (is_string ($mixed)) {
+    //         return utf8_encode($mixed);
+    //     }
+    //     return $mixed;
+    // }
 
     /**
      * Check if host is available on the port specified.
@@ -1285,7 +1294,9 @@ class Helper
         $links = array();
 
         // Extract existing links and tags
-        $value = preg_replace_callback('~(<a .*?>.*?</a>|<.*?>)~i', function ($match) use (&$links) { return '<' . array_push($links, $match[1]) . '>'; }, $value);
+        $value = preg_replace_callback('~(<a .*?>.*?</a>|<.*?>)~i', function ($match) use (&$links) { return '<' . array_push($links, $match[1]) . '>'; }, $value ?? '');
+
+        $value = $value ?? '';
 
         // Extract text links for each protocol
         foreach ((array)$protocols as $protocol) {
@@ -1298,7 +1309,7 @@ class Helper
         }
 
         // Insert all link
-        return preg_replace_callback('/<(\d+)>/', function ($match) use (&$links) { return $links[$match[1] - 1]; }, $value);
+        return preg_replace_callback('/<(\d+)>/', function ($match) use (&$links) { return $links[$match[1] - 1]; }, $value ?? '');
     }
 
     /**
@@ -1459,7 +1470,8 @@ class Helper
         try {
             $headers = get_headers($uri);
 
-            if (!preg_match("/200/", $headers[0])) {
+            // 307 - Temporary Redirect.
+            if (!preg_match("/(200|301|302|307)/", $headers[0])) {
                 return false;
             }
 
@@ -1556,7 +1568,7 @@ class Helper
     /**
      * Fix and parse date to Carbon.
      */
-    public static function parseDateToCarbon($date)
+    public static function parseDateToCarbon($date, $current_if_invalid = true)
     {
         if (preg_match('/\+0580/', $date)) {
             $date = str_replace('+0580', '+0530', $date);
@@ -1584,7 +1596,11 @@ class Helper
             try {
                 return Carbon::parse($date);
             } catch (\Exception $_e) {
-                return Carbon::now();
+                if ($current_if_invalid) {
+                    return Carbon::now();
+                } else {
+                    return null;
+                }
             }
         }
 
@@ -1616,6 +1632,12 @@ class Helper
 
     public static function isLocaleRtl(): bool
     {
-        return in_array(app()->getLocale(), config("app.locales_rtl"));
+        return in_array(app()->getLocale(), config("app.locales_rtl") ?? []);
+    }
+
+    public static function phoneToNumeric($phone)
+    {
+        $phone = preg_replace("/[^0-9]/", '', $phone);
+        return (string)$phone;
     }
 }

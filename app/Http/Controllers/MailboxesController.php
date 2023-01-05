@@ -185,7 +185,9 @@ class MailboxesController extends Controller
                 $validator->errors()->add('email', __('There is a user with such email. Users and mailboxes can not have the same email addresses.'));
             }
 
-            if ($invalid || $validator->fails()) {
+            $validator = \Eventy::filter('mailbox.settings_validator', $validator, $mailbox, $request);
+
+            if ($invalid || count($validator->errors()) || $validator->fails()) {
                 return redirect()->route('mailboxes.update', ['id' => $id])
                             ->withErrors($validator)
                             ->withInput();
@@ -204,7 +206,7 @@ class MailboxesController extends Controller
             }
         }
 
-        \Eventy::action( 'mailboxes.settings_before_save', $id, $request );
+        \Eventy::action('mailbox.settings_before_save', $mailbox, $request);
 
         $mailbox->fill($request->all());
 
@@ -334,7 +336,7 @@ class MailboxesController extends Controller
         }
 
         // Do not save dummy password.
-        if (preg_match("/^\*+$/", $request->out_password)) {
+        if (preg_match("/^\*+$/", $request->out_password ?? '')) {
             $params = $request->except(['out_password']);
         } else {
             $params = $request->all();
@@ -411,6 +413,8 @@ class MailboxesController extends Controller
         } else {
             $params = $request->all();
         }
+
+        \Eventy::action('mailbox.incoming_settings_before_save', $mailbox, $request);
 
         $mailbox->fill($params);
 
@@ -739,9 +743,14 @@ class MailboxesController extends Controller
 
                 if (!$response['msg']) {
 
-                    // Remove threads and conversations
-                    Thread::whereIn('conversation_id', $mailbox->conversations()->pluck('id')->toArray())
-                        ->delete();
+                    // Remove threads and conversations.
+                    $conversation_ids = $mailbox->conversations()->pluck('id')->toArray();
+                    
+                    for ($i=0; $i < ceil(count($conversation_ids) / \Helper::IN_LIMIT); $i++) { 
+                        $slice_ids = array_slice($conversation_ids, $i*\Helper::IN_LIMIT, \Helper::IN_LIMIT);
+                        Thread::whereIn('conversation_id', $slice_ids)->delete();
+                    }
+
                     $mailbox->conversations()->delete();
                     $mailbox->users()->sync([]);
                     $mailbox->folders()->delete();
@@ -761,8 +770,6 @@ class MailboxesController extends Controller
 
                 if (!$mailbox) {
                     $response['msg'] = __('Mailbox not found');
-                } elseif (!$user->isAdmin()) {
-                    $response['msg'] = __('Not enough permissions');
                 }
 
                 if (!$response['msg']) {

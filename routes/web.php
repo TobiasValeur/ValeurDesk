@@ -26,10 +26,10 @@ if (config('app.dashboard_path')) {
 	Route::redirect('/home', config('app.url'), 302);
 }
 
-// Public routes
-Route::get('/user-setup/{hash}', 'PublicController@userSetup')->name('user_setup');
-Route::post('/user-setup/{hash}', 'PublicController@userSetupSave');
-Route::get('/storage/attachment/{dir_1}/{dir_2}/{dir_3}/{file_name}', 'PublicController@downloadAttachment')->name('attachment.download');
+// Open routes
+Route::get('/user-setup/{hash}', 'OpenController@userSetup')->name('user_setup');
+Route::post('/user-setup/{hash}', 'OpenController@userSetupSave');
+Route::get('/storage/attachment/{dir_1}/{dir_2}/{dir_3}/{file_name}', 'OpenController@downloadAttachment')->name('attachment.download');
 
 // General routes for logged in users
 if (config('app.dashboard_path')) {
@@ -65,6 +65,7 @@ Route::get('/conversation/{id}', ['uses' => 'ConversationsController@view', 'lar
 Route::post('/conversation/ajax', ['uses' => 'ConversationsController@ajax', 'laroute' => true])->name('conversations.ajax');
 Route::post('/conversation/upload', ['uses' => 'ConversationsController@upload', 'laroute' => true])->name('conversations.upload');
 Route::get('/mailbox/{mailbox_id}/new-ticket', 'ConversationsController@create')->name('conversations.create');
+Route::get('/mailbox/{mailbox_id}/clone-ticket/{from_thread_id}', 'ConversationsController@cloneConversation')->name('conversations.clone_conversation');
 //Route::get('/conversation/draft/{id}', 'ConversationsController@draft')->name('conversations.draft');
 Route::get('/conversation/ajax-html/{action}', ['uses' => 'ConversationsController@ajaxHtml', 'laroute' => true])->name('conversations.ajax_html');
 Route::get('/search', 'ConversationsController@search')->name('conversations.search');
@@ -115,9 +116,10 @@ Route::post('/system/tools', ['uses' => 'SystemController@toolsExecute', 'middle
 Route::post('/system/ajax', ['uses' => 'SystemController@ajax', 'laroute' => true, 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('system.ajax');
 Route::post('/system/action', ['uses' => 'SystemController@action', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('system.action');
 Route::get('/system/cron/{hash}', ['uses' => 'SystemController@cron'])->name('system.cron');
+Route::get('/system/ajax-html/{action}/{param?}', ['uses' => 'SystemController@ajaxHtml', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('system.ajax_html');
 
 // Open tracking
-Route::get('/thread/read/{conversation_id}/{thread_id}', 'PublicController@setThreadAsRead')->name('open_tracking.set_read');
+Route::get('/thread/read/{conversation_id}/{thread_id}', 'OpenController@setThreadAsRead')->name('open_tracking.set_read');
 
 // Uploads
 Route::post('/uploads/upload', ['uses' => 'SecureController@upload', 'laroute' => true])->name('uploads.upload');

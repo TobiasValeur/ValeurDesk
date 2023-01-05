@@ -52,6 +52,9 @@ return [
             'prefix'      => '',
             'strict'      => false,
             'engine'      => null,
+            'options'     => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('DB_MYSQL_ATTR_SSL_CA'),
+            ]) : [],
         ],
 
         'testing' => [
@@ -76,7 +79,7 @@ return [
             'charset'  => 'utf8',
             'prefix'   => '',
             'schema'   => 'public',
-            'sslmode'  => 'prefer',
+            'sslmode'  => env('DB_PGSQL_SSLMODE', 'prefer'),
         ],
 
         'sqlsrv' => [

@@ -24,23 +24,42 @@
 
         // Sorting.
         $sorting = App\Conversation::getConvTableSorting();
+
+        // Build columns list
+        $columns = ['current'];
+        if (empty($no_checkboxes)) {
+            $columns[] = 'cb';
+        }
+        if (empty($no_customer)) {
+            $columns[] = 'customer';
+        }
+        $columns[] = 'attachment';
+        $columns[] = 'subject';
+        $columns[] = 'count';
+        if ($show_assigned) {
+            $columns[] = 'assignee';
+        }
+        $columns[] = 'number';
+        $columns[] = 'date';
+
+        $col_counter = 6;
     @endphp
 
     @if (!request()->get('page'))
         @include('/conversations/partials/bulk_actions')
     @endif
 
-    <table class="table-conversations table @if (!empty($params['show_mailbox']))show-mailbox @endif" data-page="{{ (int)request()->get('page', 1) }}" @foreach ($params as $param_name => $param_value) data-param_{{ $param_name }}="{{ $param_value }}" @endforeach @if (!empty($conversations_filter)) @foreach ($conversations_filter as $filter_field => $filter_value) data-filter_{{ $filter_field }}="{{ $filter_value }}" @endforeach @endif @foreach ($sorting as $sorting_name => $sorting_value) data-param_{{ $sorting_name }}="{{ $sorting_value }}" @endforeach >
+    <table class="table-conversations table @if (!empty($params['show_mailbox']))show-mailbox @endif" data-page="{{ (int)request()->get('page', 1) }}" @foreach ($params as $param_name => $param_value) data-param_{{ $param_name }}="{{ $param_value }}" @endforeach @if (!empty($conversations_filter)) @foreach ($conversations_filter as $filter_field => $filter_value) data-filter_{{ $filter_field }}="{{ $filter_value }}" @endforeach @endif @foreach ($sorting as $sorting_name => $sorting_value) data-sorting_{{ $sorting_name }}="{{ $sorting_value }}" @endforeach >
         <colgroup>
             {{-- todo: without this column table becomes not 100% wide --}}
             <col class="conv-current">
-            @if (empty($no_checkboxes))<col class="conv-cb">@endif
-            @if (empty($no_customer))<col class="conv-customer">@endif
+            @if (empty($no_checkboxes))<col class="conv-cb">@php $col_counter++ ; @endphp@endif
+            @if (empty($no_customer))<col class="conv-customer">@php $col_counter++ ; @endphp@endif
             <col class="conv-attachment">
             <col class="conv-subject">
             <col class="conv-thread-count">
             @if ($show_assigned)
-                <col class="conv-owner">
+                <col class="conv-owner">@php $col_counter++ ; @endphp
             @endif
             @action('conversations_table.col_before_conv_number')
             <col class="conv-number">
@@ -87,7 +106,7 @@
             <th class="conv-date">
                 <span>
                     <span class="conv-col-sort" data-sort-by="date" data-order="@if ($sorting['sort_by'] == 'date'){{ $sorting['order'] }}@else{{ 'asc' }}@endif">
-                        @if ($folder->type == App\Folder::TYPE_CLOSED){{ __("Closed") }}@elseif ($folder->type == App\Folder::TYPE_DRAFTS){{ __("Last Updated") }}@elseif ($folder->type == App\Folder::TYPE_DELETED){{ __("Deleted") }}@else{{ \Eventy::filter('conversations_table.column_title_date', __("Waiting Since"), $folder) }}@endif @if ($sorting['sort_by'] == 'date' && $sorting['order'] =='desc')↑@elseif ($sorting['sort_by'] == 'date' && $sorting['order'] =='asc')↓@elseif ($sorting['sort_by'] == '' && $sorting['order'] =='')↓@endif
+                        @if ($folder->type == App\Folder::TYPE_CLOSED){{ __("Closed") }}@elseif ($folder->type == App\Folder::TYPE_DRAFTS){{ __("Last Updated") }}@elseif ($folder->type == App\Folder::TYPE_DELETED){{ __("Deleted") }}@else{{ \Eventy::filter('conversations_table.column_title_date', __("Waiting Since"), $folder) }}@endif @if ($sorting['sort_by'] == 'date' && $sorting['order'] == 'desc')↑@elseif ($sorting['sort_by'] == 'date' && $sorting['order'] == 'asc')↓@elseif ($sorting['sort_by'] == '' && $sorting['order'] =='')↓@endif
                     </a>
                 </span>
             </th>
@@ -95,7 +114,7 @@
         </thead>
         <tbody>
             @foreach ($conversations as $conversation)
-                <tr class="conv-row @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}">
+                <tr class="conv-row @action('conversations_table.row_class', $conversation) @if ($conversation->isActive()) conv-active @endif @if ($conversation->isSpam()) conv-spam @endif" data-conversation_id="{{ $conversation->id }}">
                     @if (empty($no_checkboxes))<td class="conv-current">@if (!empty($viewers[$conversation->id]))
                                 <div class="viewer-badge @if (!empty($viewers[$conversation->id]['replying'])) viewer-replying @endif" data-toggle="tooltip" title="@if (!empty($viewers[$conversation->id]['replying'])){{ __(':user is replying', ['user' => $viewers[$conversation->id]['user']->getFullName()]) }}@else{{ __(':user is viewing', ['user' => $viewers[$conversation->id]['user']->getFullName()]) }}@endif"><div>
                             @endif</td>@else<td class="conv-current"></td>@endif
@@ -168,15 +187,12 @@
                         <a href="{{ $conversation->url() }}" @if (!in_array($folder->type, [App\Folder::TYPE_CLOSED, App\Folder::TYPE_DRAFTS, App\Folder::TYPE_DELETED])) data-toggle="tooltip" data-html="true" data-placement="left" title="{{ $conversation->getDateTitle() }}"@else title="{{ __('View conversation') }}" @endif @if (!empty($params['target_blank'])) target="_blank" @endif>{{ $conversation->getWaitingSince($folder) }}</a>
                     </td>
                 </tr>
+                @action('conversations_table.after_row', $conversation, $columns, $col_counter)
             @endforeach
         </tbody>
         <tfoot>
             <tr>
-                @if ($show_assigned)
-                    <td class="conv-totals" colspan="6">
-                @else
-                    <td class="conv-totals" colspan="5">
-                @endif
+                <td class="conv-totals" colspan="{{ $col_counter-3 }}">
                     @if ($conversations->total())
                         <strong>{{ $conversations->total() }}</strong> {{ __('total conversations') }}&nbsp;|&nbsp; 
                     @endif

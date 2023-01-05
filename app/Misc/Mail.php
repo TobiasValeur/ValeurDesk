@@ -72,6 +72,7 @@ class Mail
         '<!-- originalMessage -->',
         '‐‐‐‐‐‐‐ Original Message ‐‐‐‐‐‐‐',
         '--------------- Original Message ---------------',
+        '-------- Αρχικό μήνυμα --------', // Greek
     ];
 
     /**
@@ -139,6 +140,8 @@ class Mail
         // We have to update Mailer facade manually, as it does not happen automatically
         // and previous instance of app('mailer') is used.
         \Mail::swap(app('mailer'));
+
+        \Eventy::action('mail.reapply_mail_config');
     }
 
     /**
@@ -193,6 +196,7 @@ class Mail
             $vars['{%customer.fullName%}'] = $data['customer']->getFullName(true);
             $vars['{%customer.firstName%}'] = $data['customer']->getFirstName(true);
             $vars['{%customer.lastName%}'] = $data['customer']->last_name;
+            $vars['{%customer.company%}'] = $data['customer']->company;
         }
         if (!empty($data['user'])) {
             $vars['{%user.fullName%}'] = $data['user']->getFullName();
@@ -220,7 +224,7 @@ class Mail
      */
     public static function hasVars($text)
     {
-        return preg_match('/({%|%})/', $text);
+        return preg_match('/({%|%})/', $text ?? '');
     }
 
     /**
@@ -455,6 +459,11 @@ class Mail
         return '';
     }
 
+    public static function getMessageIdHash($thread_id)
+    {
+        return substr(md5($thread_id.config('app.key')), 0, 16);
+    }
+
     /**
      * Detect autoresponder by headers.
      * https://github.com/jpmckinney/multi_mail/wiki/Detecting-autoresponders
@@ -467,7 +476,7 @@ class Mail
         $autoresponder_headers = [
             'x-autoreply'    => '',
             'x-autorespond'  => '',
-            'auto-submitted' => 'auto-replied',
+            'auto-submitted' => '', // this can be auto-replied, auto-generated, etc.
             'precedence' => ['auto_reply', 'bulk', 'junk'],
             'x-precedence' => ['auto_reply', 'bulk', 'junk'],
         ];

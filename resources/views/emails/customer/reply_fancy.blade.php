@@ -11,7 +11,9 @@
 </head>
 <body style="-webkit-text-size-adjust:none;">
 	<div id="{{ App\Misc\Mail::REPLY_SEPARATOR_HTML }}" class="{{ App\Misc\Mail::REPLY_SEPARATOR_HTML }}" style="width:100%!important; margin:0; padding:0">
-	            
+	    @php
+	    	$is_forwarded = !empty($threads[0]) ? $threads[0]->isForwarded() : false;
+	    @endphp
 		@foreach ($threads as $thread)
 			@if ($loop->index == 1)<!-- originalMessage --><div class="gmail_quote" style="height:0; font-size:0px; line-height:0px; color:#ffffff;"></div>@endif
 	        <div style="width:100%; margin:0;">
@@ -21,7 +23,7 @@
 			                <td style="padding:8px 0 10px 0;">
 			                	
 			                    <h3 style="font-family:Arial, 'Helvetica Neue', Helvetica, Tahoma, sans-serif; color:#727272; font-size:15px; line-height:21px; margin:0; font-weight:normal;">
-			                    	<strong style="color:#000000;">{{ $thread->getFromName($mailbox) }}</strong>
+			                    	<strong style="color:#000000;">{{ $thread->getFromName($mailbox) }}@if ($is_forwarded && $thread->from) &lt;{{ $thread->from }}&gt;@endif</strong>
 			                    	{{--if ($loop->last){!! __(':person sent a message', ['person' => '<strong style="color:#000000;">'.htmlspecialchars($thread->getFromName($mailbox)).'</strong>']) !!}@else {!! __(':person replied', ['person' => '<strong style="color:#000000;">'.htmlspecialchars($thread->getFromName($mailbox)).'</strong>']) !!}@endif--}}
 			                	</h3>
 
@@ -62,12 +64,12 @@
 		@endforeach
 		@if (\App\Option::get('email_branding'))
             <div height="" style="height:30px; font-size:12px; line-height:18px; font-family:Arial,'Helvetica Neue',Helvetica,Tahoma,sans-serif; color: #aaaaaa;">
-				{!! __('Support powered by :app_name — Free open source help desk & shared mailbox', ['app_name' => '<a href="'.Config::get('app.freescout_url').'">'.\Config::get('app.name').'</a>']) !!}
+				{!! __('Support powered by :app_name — Free open source help desk & shared mailbox', ['app_name' => '<a href="https://landing.freescout.net">'.\Config::get('app.name').'</a>']) !!}
 			</div>
 		@endif
 		<div style="height:0; font-size:0px; line-height:0px; color:#ffffff;">	                    	
 			@if (\App\Option::get('open_tracking'))
-				<img src="{{ route('open_tracking.set_read', ['conversation_id' => $threads->first()->conversation_id, 'thread_id' => $threads->first()->id]) }}/" alt="" />
+				<img src="{{ route('open_tracking.set_read', ['conversation_id' => $threads->first()->conversation_id, 'thread_id' => $threads->first()->id]) }}" alt="" />
 			@endif
 			{{-- Addition to Message-ID header to detect relies --}}
 			<span style="font-size: 0px; line-height: 0px; color:#ffffff !important;">{{ \MailHelper::getMessageMarker($headers['Message-ID']) }}</span>

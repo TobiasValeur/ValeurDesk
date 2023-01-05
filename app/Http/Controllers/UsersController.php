@@ -98,6 +98,9 @@ class UsersController extends Controller
             // Set some random password before sending invite
             $user->password = Hash::make($user->generateRandomPassword());
         }
+        // Set system timezone.
+        $user->timezone = config('app.timezone') ?: User::DEFAULT_TIMEZONE;
+        $user = \Eventy::filter('user.create_save', $user, $request);
         $user->save();
 
         $user->mailboxes()->sync($request->mailboxes);
@@ -229,7 +232,7 @@ class UsersController extends Controller
                 $request_data['status'] = User::STATUS_ACTIVE;
             }
         }
-        $user->fill($request_data);
+        $user->setData($request_data);
 
         if (empty($request->input('enable_kb_shortcuts'))) {
             $user->enable_kb_shortcuts = false;
@@ -557,7 +560,7 @@ class UsersController extends Controller
 
                     $user->status = \App\User::STATUS_DELETED;
                     // Update email.
-                    $email_suffix = '_deleted'.date('YmdHis');
+                    $email_suffix = User::EMAIL_DELETED_SUFFIX.date('YmdHis');
                     // We have to truncate email to avoid "Data too long" error.
                     $user->email = mb_substr($user->email, 0, User::EMAIL_MAX_LENGTH - mb_strlen($email_suffix)).$email_suffix;
 

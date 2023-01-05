@@ -160,6 +160,7 @@ class Folder extends Model
 
             case self::TYPE_CLOSED:
                 $order_by = [['closed_at' => 'desc']];
+                break;
 
             case self::TYPE_SPAM:
                 $order_by = [['last_reply_at' => 'desc']];
@@ -407,5 +408,40 @@ class Folder extends Model
         }
 
         return $folder;
+    }
+
+    /**
+     * Get meta value.
+     */
+    public function getMeta($key, $default = null)
+    {
+        $metas = $this->meta;
+        if (isset($metas[$key])) {
+            return $metas[$key];
+        } else {
+            return $default;
+        }
+    }
+
+    /**
+     * Set meta value.
+     */
+    public function setMeta($key, $value)
+    {
+        $metas = $this->meta;
+        $metas[$key] = $value;
+        $this->meta = $metas;
+    }
+
+    /**
+     * Unset thread meta value.
+     */
+    public function unsetMeta($key)
+    {
+        $metas = $this->meta;
+        if (isset($metas[$key])) {
+            unset($metas[$key]);
+            $this->meta = $metas;
+        }
     }
 }

@@ -164,34 +164,47 @@ var EditorDiscardButton = function (context) {
 var EditorInsertVarButton = function (context) {
 	var ui = $.summernote.ui;
 
-	// todo: fallback=
-	var contents =
-		'<select class="form-control summernote-inservar" tabindex="-1">'+
-		    '<option value="">'+Lang.get("messages.insert_var")+' ...</option>'+
-		    '<optgroup label="'+Lang.get("messages.mailbox")+'">'+
-		        '<option value="{%mailbox.email%}">'+Lang.get("messages.email")+'</option>'+
-		        '<option value="{%mailbox.name%}">'+Lang.get("messages.name")+'</option>'+
-		        '<option value="{%mailbox.fromName%}">'+Lang.get("messages.from_name")+'</option>'+
-		    '</optgroup>'+
-		    '<optgroup label="'+Lang.get("messages.conversation")+'">'+
-		        '<option value="{%conversation.number%}">'+Lang.get("messages.number")+'</option>'+
-		    '</optgroup>'+
-		    '<optgroup label="'+Lang.get("messages.customer")+'">'+
-		        '<option value="{%customer.fullName%}">'+Lang.get("messages.full_name")+'</option>'+
-		        '<option value="{%customer.firstName%}">'+Lang.get("messages.first_name")+'</option>'+
-		        '<option value="{%customer.lastName%}">'+Lang.get("messages.last_name")+'</option>'+
-		        '<option value="{%customer.email%}">'+Lang.get("messages.email_addr")+'</option>'+
-		    '</optgroup>'+
-		    '<optgroup label="'+Lang.get("messages.user")+'">'+
-		        '<option value="{%user.fullName%}">'+Lang.get("messages.full_name")+'</option>'+
-		        '<option value="{%user.firstName%}">'+Lang.get("messages.first_name")+'</option>'+
-		        '<option value="{%user.lastName%}">'+Lang.get("messages.last_name")+'</option>'+
-		        '<option value="{%user.jobTitle%}">'+Lang.get("messages.job_title")+'</option>'+
-		        '<option value="{%user.phone%}">'+Lang.get("messages.phone")+'</option>'+
-		        '<option value="{%user.email%}">'+Lang.get("messages.email_addr")+'</option>'+
-		        '<option value="{%user.photoUrl%}">'+Lang.get("messages.photo_url")+'</option>'+
-		    '</optgroup>'+
-	    '</select>';
+	var vars = {
+		mailbox: {
+			'mailbox.email': Lang.get("messages.email"),
+			'mailbox.name': Lang.get("messages.name"),
+			'mailbox.fromName': Lang.get("messages.from_name")
+		},
+		conversation: {
+			'conversation.number': Lang.get("messages.number")
+		},
+		customer: {
+			'customer.fullName': Lang.get("messages.full_name"),
+			'customer.firstName': Lang.get("messages.first_name"),
+			'customer.lastName': Lang.get("messages.last_name"),
+			'customer.email': Lang.get("messages.email_addr"),
+			'customer.company': Lang.get("messages.company"),
+		},
+		user: {
+			'user.fullName': Lang.get("messages.full_name"),
+			'user.firstName': Lang.get("messages.first_name"),
+			'user.lastName': Lang.get("messages.last_name"),
+			'user.jobTitle': Lang.get("messages.job_title"),
+			'user.phone': Lang.get("messages.phone"),
+			'user.email': Lang.get("messages.email_addr"),
+			'user.photoUrl': Lang.get("messages.photo_url"),
+
+		},
+	};
+
+	vars = fsApplyFilter('editor.vars', vars);
+
+	var contents = '<select class="form-control summernote-inservar" tabindex="-1">'+
+		    '<option value="">'+Lang.get("messages.insert_var")+' ...</option>';
+    for (var entity_name in vars) {
+    	contents += '<optgroup label="'+Lang.get("messages."+entity_name)+'">';
+		for (var var_name in vars[entity_name]) {
+			contents += '<option value="{%'+var_name+'%}">'+vars[entity_name][var_name]+'</option>';
+		}
+    	contents += '</optgroup>';
+    }
+
+	contents += '</select>';
 
 	// create button
 	var button = ui.button({
@@ -394,6 +407,14 @@ function initModals(html_tag)
 	});
 }
 
+function editorProcessInsertVar(editor)
+{
+	editor.parent().children().find('.summernote-inservar:first').on('change', function(event) {
+		editor.summernote('insertText', $(this).val());
+		$(this).val('');
+	});
+}
+
 function mailboxUpdateInit(from_name_custom)
 {
 	var selector = '#signature';
@@ -406,10 +427,7 @@ function mailboxUpdateInit(from_name_custom)
 			callbacks: {
 				onInit: function() {
 					$(selector).parent().children().find('.note-statusbar').remove();
-					$(selector).parent().children().find('.summernote-inservar:first').on('change', function(event) {
-						$(selector).summernote('insertText', $(this).val());
-						$(this).val('');
-					});
+					editorProcessInsertVar($(selector));
 				},
 				onImageUpload: function(files) {
 					if (!files) {
@@ -570,6 +588,19 @@ function summernoteInit(selector, new_options)
 	}*/
 
 	$el.summernote(options);
+
+	// To save data when editing the code directly
+	fsFixEditorCodeSaving($el)
+}
+
+// To save data when editing the code directly
+function fsFixEditorCodeSaving($el)
+{
+	$el.next().children().find('.note-codable').on('blur', function() {
+		if ($el.summernote('codeview.isActivated')) {
+			$el.val($el.summernote('code'));
+		}
+	});
 }
 
 function permissionsInit()
@@ -835,20 +866,35 @@ function fsAjax(data, url, success_callback, no_loader, error_callback, custom_o
 	}
 
 	// If this is conversation ajax request, add folder_id to the URL
-	if (url.indexOf('/conversation/') != -1) {
-		var folder_id = getQueryParam('folder_id');
-		if (folder_id) {
-			url += '?folder_id='+folder_id;
-		}
+    if (url.indexOf('/conversation/') != -1) {
+        var folder_id = getQueryParam('folder_id');
+        if (folder_id) {
+        	url = addQueryParam('folder_id', folder_id, url);
+        }
+    }
+
+    var preserve_xembed = false;
+    if (window.location.href.indexOf('x_embed=1') != -1) {
+    	url = addQueryParam('x_embed', 1, url);
+        preserve_xembed = true;
 	}
 
-	var options = {
-		url: url,
-		method: 'post',
-		dataType: 'json',
-		data: data,
-		success: success_callback,
-		error: error_callback
+    var override_success_callback = function(response) {
+        if (typeof(response.redirect_url) != "undefined") {
+            if (preserve_xembed && response.redirect_url.indexOf('x_embed=1') == -1) {
+            	response.redirect_url = addQueryParam('x_embed', 1, response.redirect_url);
+            }
+        }
+        return success_callback(response);
+    };
+
+    var options = {
+        url: url,
+        method: 'post',
+        dataType: 'json',
+        data: data,
+        success: override_success_callback,
+        error: error_callback
     };
 
     if (typeof(custom_options) == "object") {
@@ -1060,32 +1106,10 @@ function initConversation()
 	    jQuery(".conv-add-note").click(function(e) {
 	    	var reply_block = $(".conv-reply-block");
 	    	if (reply_block.hasClass('hidden')  /*|| $(this).hasClass('inactive')*/) {
-	    		// Show
-				hideActionBlocks();
-				reply_block.removeClass('hidden')
-					.addClass('conv-note-block')
-					.removeClass('conv-forward-block')
-					.children().find(":input[name='is_note']:first").val(1);
-				$('#conv-subject').addClass('action-visible');
-				reply_block.children().find(":input[name='thread_id']:first").val('');
-				reply_block.children().find(":input[name='subtype']:first").val('');
-				//$(".conv-reply-block").children().find(":input[name='body']:first").val('');
-
-				// Note never changes Assignee by default
-				reply_block.children().find(":input[name='user_id']:first").val(getConvData('user_id'));
-
-	    		// Show default status
-	    		var input_status = reply_block.children().find(":input[name='status']:first");
-	    		input_status.val(input_status.attr('data-note-status'));
-
-	    		$(".attachments-upload:first :input, .attachments-upload:first li").remove();
-
-				$(".conv-action").addClass('inactive');
-				$(this).removeClass('inactive');
-				//$('#body').summernote("code", '');
-				$('#body').summernote('focus');
-
-				maybeScrollToReplyBlock();
+    			// To prevent browser autocomplete, clean body
+				// We have to insert this code to allow proper UL/OL
+				setReplyBody('<div><br></div>');
+				showNoteForm();
 			} /*else {
 				// Hide
 				$(".conv-action-block").addClass('hidden');
@@ -1175,6 +1199,12 @@ function initConversation()
 		// Edit thread
 		jQuery(".thread-edit-trigger").click(function(e){
 			editThread($(this));
+			e.preventDefault();
+		});
+
+		// Delete thread
+		jQuery(".thread-delete-trigger").click(function(e){
+			deleteThread($(this));
 			e.preventDefault();
 		});
 
@@ -1328,6 +1358,39 @@ function getConvData(field)
 		return $('.conv-user:first li.active a:first').attr('data-user_id');
 	}
 	return null;
+}
+
+function showNoteForm()
+{
+	var reply_block = $(".conv-reply-block");
+	if (reply_block.hasClass('hidden')  /*|| $(this).hasClass('inactive')*/) {
+		// Show
+		hideActionBlocks();
+		reply_block.removeClass('hidden')
+			.addClass('conv-note-block')
+			.removeClass('conv-forward-block')
+			.children().find(":input[name='is_note']:first").val(1);
+		$('#conv-subject').addClass('action-visible');
+		reply_block.children().find(":input[name='thread_id']:first").val('');
+		reply_block.children().find(":input[name='subtype']:first").val('');
+		//$(".conv-reply-block").children().find(":input[name='body']:first").val('');
+
+		// Note never changes Assignee by default
+		reply_block.children().find(":input[name='user_id']:first").val(getConvData('user_id'));
+
+		// Show default status
+		var input_status = reply_block.children().find(":input[name='status']:first");
+		input_status.val(input_status.attr('data-note-status'));
+
+		$(".attachments-upload:first :input, .attachments-upload:first li").remove();
+
+		$(".conv-action").addClass('inactive');
+		$(this).removeClass('inactive');
+		//$('#body').summernote("code", '');
+		$('#body').summernote('focus');
+
+		maybeScrollToReplyBlock();
+	}
 }
 
 // Prepare reply/forward form for display
@@ -1513,6 +1576,7 @@ function convEditorInit()
 	options = fsApplyFilter('editor.options', options);
 
 	$('#body').summernote(options);
+	fsFixEditorCodeSaving($('#body'));
 	$('#editor_bottom_toolbar a[data-modal-applied="1"]').removeAttr('data-modal-applied');
 	var html = $('#editor_bottom_toolbar').html();
 	$('.note-statusbar').addClass('note-statusbar-toolbar form-inline').html(html);
@@ -1577,6 +1641,8 @@ function onReplyChange()
 // Save reply draft or note on form focus out
 function onReplyBlur()
 {
+	$('#body').summernote('editor.saveRange');
+
 	// If start saving draft immediately, then when Send Reply is clicked
 	// two ajax requests will be sent at the same time.
 	setTimeout(function() {
@@ -1805,7 +1871,7 @@ function initRecipientSelector(custom_options, selector)
 
 			// Don't allow to create a tag if there is no @ symbol
 			if (typeof(custom_options.allow_non_emails) == "undefined") {
-			    if (value.indexOf('@') === -1) {
+			    if (!/^.+@.+$/.test(value)) {
 					// Return null to disable tag creation
 					return null;
 			    }
@@ -2083,6 +2149,16 @@ function getQueryParam(name, qs) {
     }
 }
 
+function addQueryParam(name, value, url)
+{
+	var search = url.substring(url.indexOf('?') + 1);
+	if (search != url) {
+		return url + '&' + encodeURIComponent(name)+'=' + encodeURIComponent(value);
+	} else {
+		return url + '?' + encodeURIComponent(name) + '=' + encodeURIComponent(value);
+	}
+}
+
 // Show bootstrap modal
 function showModal(params)
 {
@@ -2095,6 +2171,10 @@ function triggerModal(a, params)
 {
     if (typeof(params) == "undefined") {
     	params = {};
+    }
+
+    if (typeof(params.options) == "undefined") {
+    	params.options = {};
     }
 
     if (typeof(a) == "undefined" || !a) {
@@ -2204,7 +2284,7 @@ function triggerModal(a, params)
     //     modal.on('shown.bs.modal', onshow);
     // }
 
-    modal.modal();
+    modal.modal(params.options);
 
     modal.on('hidden.bs.modal', function () {
 	    $(this).remove();
@@ -2271,9 +2351,14 @@ function saveAfterSend(el)
 	button.button('loading');
 
 	var value = $(el).parents('.modal-body:first').children().find('[name="after_send_default"]:first').val();
+
+	var mailbox_id = getGlobalAttr('mailbox_id');
+	if (!mailbox_id) {
+		mailbox_id = $(el).parents('.modal-body:first').children().find('[name="default_redirect_mailbox_id"]:first').val()
+	}
 	data = {
 		value: value,
-		mailbox_id: getGlobalAttr('mailbox_id'),
+		mailbox_id: mailbox_id,
 		action: 'save_after_send'
 	};
 
@@ -2301,7 +2386,7 @@ function initMailboxToolbar()
 {
 	$(document).ready(function() {
 		// Empty trash
-		$(".mailbox-empty-trash").click(function(e) {
+		$(".mailbox-empty-folder").click(function(e) {
 			showModalDialog('#conversations-bulk-actions-delete-modal', {
 				on_show: function(modal) {
 					modal.children().find('.delete-conversation-ok:first').click(function(e) {
@@ -2310,7 +2395,7 @@ function initMailboxToolbar()
 
 						fsAjax(
 							{
-								action: 'empty_trash',
+								action: 'empty_folder',
 								folder_id: getGlobalAttr('folder_id')
 							},
 							laroute.route('conversations.ajax'),
@@ -2835,7 +2920,7 @@ function initCustomerSelector(input, custom_options)
 			createTag: function (params) {
 				// Don't allow to create a tag if there is no @ symbol
 				if (typeof(custom_options.allow_non_emails) == "undefined") {
-				    if (params.term.indexOf('@') === -1) {
+				    if (!/^.+@.+$/.test(params.term)) {
 						// Return null to disable tag creation
 						return null;
 				    }
@@ -3815,8 +3900,10 @@ function followConversation(action)
 				var opposite = '';
 				if (action == 'follow') {
 					opposite = 'unfollow';
+					$('#conv-layout').addClass('conv-following');
 				} else {
 					opposite = 'follow';
+					$('#conv-layout').removeClass('conv-following');
 				}
 				$('.conv-follow[data-follow-action="'+action+'"]').addClass('hidden');
 				$('.conv-follow[data-follow-action="'+opposite+'"]').removeClass('hidden');
@@ -4025,6 +4112,30 @@ function editThread(button)
 				thread_container.children().hide();
 				thread_container.prepend(response.html);
 				summernoteInit(thread_container.find('.thread-editor:first'));
+			} else {
+				showAjaxError(response);
+			}
+		}
+	);
+}
+
+// Delete thread (note)
+function deleteThread(button)
+{
+	var thread_container = button.parents('.thread:first');
+	
+	button.button('loading');
+
+	fsAjax({
+			action: 'delete_thread',
+			thread_id: thread_container.attr('data-thread_id')
+		},
+		laroute.route('conversations.ajax'),
+		function(response) {
+			loaderHide();
+			button.button('reset');
+			if (isAjaxSuccess(response)) {
+				thread_container.remove();
 			} else {
 				showAjaxError(response);
 			}
@@ -4420,7 +4531,7 @@ function maybeShowStoredNote()
 			conversation_notes[conversation_id].note.trim()
 		) {
 			setReplyBody(conversation_notes[conversation_id].note);
-			switchToNote();
+			showNoteForm();
 		}
 	}
 }
@@ -4842,6 +4953,11 @@ function getCookie(name)
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined
+}
+
+function deleteCookie(name)
+{
+    document.cookie = name+'=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
 function fsAddAction(action, callback, priority)

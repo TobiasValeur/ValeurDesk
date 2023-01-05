@@ -75,7 +75,7 @@
 			                                    	{!! __(":person replied to conversation", ['person' => '<strong>'.$thread->getCreatedBy()->getFullName(true).'</strong>']) !!}
 			                                    @endif
 			                                @endif
-							            	<a href="{{ $conversation->url() }}" style="color:#3f8abf; text-decoration:none;">#{{ $conversation->number }}</a></p>
+							            	<a href="{{ \Eventy::filter('email_notification.conv_url', $conversation->url(), $user) }}" style="color:#3f8abf; text-decoration:none;">#{{ $conversation->number }}</a></p>
 							        </td>
 							    </tr>
 							    <tr>
@@ -172,7 +172,7 @@
 																		@php
 																			$trans_params = ['person' => '<strong style="color:#000000;">'.$thread->getCreatedBy()->getFullName(true).'</strong>'];
 																			if ($thread->isForwarded()) {
-																				$trans_params['forward_parent_conversation_number'] = '<a href="'.route('conversations.view', ['id' => $thread->getMeta('forward_parent_conversation_id')]).'#thread-'.$thread->getMeta('forward_parent_thread_id').'">#'.$thread->getMeta('forward_parent_conversation_number').'</a>';
+																				$trans_params['forward_parent_conversation_number'] = '<a href="'.route('conversations.view', ['id' => $thread->getMetaFw(App\Thread::META_FORWARD_PARENT_CONVERSATION_ID)]).'#thread-'.$thread->getMetaFw(App\Thread::META_FORWARD_PARENT_THREAD_ID).'">#'.$thread->getMetaFw(App\Thread::META_FORWARD_PARENT_CONVERSATION_NUMBER).'</a>';
 																			}
 																		@endphp
 																		{!! __($trans_text, $trans_params) !!}
@@ -194,7 +194,7 @@
 							                                    <div style="color: #b37100; background-color: #fff1cf; padding: 15px; margin-bottom: 20px; border: 1px solid #ffe19d;">
 							                                        {!! __(':person forwarded this conversation. Forwarded conversation: :forward_child_conversation_number', [
 							                                        'person' => ucfirst($thread->getForwardByFullName()),
-							                                        'forward_child_conversation_number' => '<a href="'.route('conversations.view', ['id' => $thread->getMeta('forward_child_conversation_id')]).'">#'.$thread->getMeta('forward_child_conversation_number').'</a>'
+							                                        'forward_child_conversation_number' => '<a href="'.route('conversations.view', ['id' => $thread->getMetaFw(App\Thread::META_FORWARD_CHILD_CONVERSATION_ID)]).'">#'.$thread->getMetaFw(App\Thread::META_FORWARD_CHILD_CONVERSATION_NUMBER).'</a>'
 							                                        ]) !!}
 							                                    </div>
 							                                @endif
@@ -243,7 +243,7 @@
 					</tr>
 					<tr>
 						<td align="center">
-							<p style="display:inline; margin:0; padding:0; font-size:12px; font-family:Arial, 'Helvetica Neue', Helvetica, Tahoma, sans-serif; color:#B5B9BD; line-height: 22px;" align="center"><a href="{{ route('users.notifications', ['id' => $user->id]) }}" style="color:#B5B9BD;">{{ __('Notification Settings') }}</a>{{ \Eventy::action('email_notification.footer_links', $mailbox, $conversation, $threads) }} - <a href="{{ $mailbox->url() }}" style="color:#B5B9BD;">{{ $mailbox->name }}</a></p>
+							<p style="display:inline; margin:0; padding:0; font-size:12px; font-family:Arial, 'Helvetica Neue', Helvetica, Tahoma, sans-serif; color:#B5B9BD; line-height: 22px;" align="center"><a href="{{ \Eventy::filter('email_notification.settings_url', route('users.notifications', ['id' => $user->id]), $user) }}" style="color:#B5B9BD;">{{ __('Notification Settings') }}</a>{{ \Eventy::action('email_notification.footer_links', $mailbox, $conversation, $threads) }} - <a href="{{ \Eventy::filter('email_notification.mailbox_url', $mailbox->url(), $user) }}" style="color:#B5B9BD;">{{ $mailbox->name }}</a></p>
 						</td>
 					</tr>
 					<tr>

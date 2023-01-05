@@ -27,6 +27,7 @@ class Mailbox extends Model
     const TICKET_STATUS_ACTIVE = 1;
     const TICKET_STATUS_PENDING = 2;
     const TICKET_STATUS_CLOSED = 3;
+    const TICKET_STATUS_KEEP_CURRENT = 0;
 
     /**
      * Default Assignee.
@@ -34,6 +35,7 @@ class Mailbox extends Model
     const TICKET_ASSIGNEE_ANYONE = 1;
     const TICKET_ASSIGNEE_REPLYING_UNASSIGNED = 2;
     const TICKET_ASSIGNEE_REPLYING = 3;
+    const TICKET_ASSIGNEE_KEEP_CURRENT = 0;
 
     /**
      * Email Template.
@@ -458,10 +460,12 @@ class Mailbox extends Model
             $users = User::sortUsers($users);
         }
 
+        $users = \Eventy::filter('mailbox.users_having_access', $users, $this, $cache, $fields, $sort);
+
         return $users;
     }
 
-    public function usersAssignable($cache = true)
+    public function usersAssignable($cache = true, $exclude_hidden = true)
     {
         // Exclude hidden admins.
         $mailbox_id = $this->id;
@@ -474,11 +478,17 @@ class Mailbox extends Model
             ->remember(\Helper::cacheTime($cache))
             ->get();
 
-        $users = $this->users()->select('users.*')->remember(\Helper::cacheTime($cache))->get()->merge($admins)->unique();
+        $users = $this->users()->select(['users.*', 'mailbox_user.hide'])
+            ->remember(\Helper::cacheTime($cache))
+            ->get()
+            ->merge($admins)
+            ->unique();
 
-        foreach ($users as $i => $user) {
-            if (!empty($user->hide)) {
-                $users->forget($i);
+        if ($exclude_hidden) {
+            foreach ($users as $i => $user) {
+                if (!empty($user->hide)) {
+                    $users->forget($i);
+                }
             }
         }
 
@@ -491,6 +501,8 @@ class Mailbox extends Model
 
         // Sort by full name
         $users = User::sortUsers($users);
+
+        $users = \Eventy::filter('mailbox.users_assignable', $users, $this, $cache);
 
         return $users;
     }
@@ -522,7 +534,10 @@ class Mailbox extends Model
                 $user = User::find($user_id);
             }
         }
-        if ($user && $user->isAdmin()) {
+        $filter = \Eventy::filter('mailbox.user_has_access', -1, $this, $user);
+        if ($filter != -1) {
+            return (bool)$filter;
+        } elseif ($user && $user->isAdmin()) {
             return true;
         } else {
             return (bool) $this->users()->where('users.id', $user_id)->count();
@@ -838,6 +853,22 @@ class Mailbox extends Model
         $route = \Eventy::filter('mailbox.access_permissions_route', $route, $perm);
 
         return $route;
+    }
+
+    public function getMeta($key, $default = null)
+    {
+        if (isset($this->meta[$key])) {
+            return $this->meta[$key];
+        } else {
+            return $default;
+        }
+    }
+
+    public function setMeta($key, $value)
+    {
+        $meta = $this->meta;
+        $meta[$key] = $value;
+        $this->meta = $meta;
     }
 
     public function setMetaParam($param, $value, $save = false)

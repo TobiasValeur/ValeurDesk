@@ -76,7 +76,7 @@ class SendReplyToCustomer implements ShouldQueue
                 $forwarded_replies = $forwarded_replies->sortByDesc(function ($item, $key) {
                     return $item->created_at;
                 });
-                $forward_parent_thread = Thread::find($forward_child_thread->getMeta('forward_parent_thread_id'));
+                $forward_parent_thread = Thread::find($forward_child_thread->getMetaFw(Thread::META_FORWARD_PARENT_THREAD_ID));
 
                 if ($forward_parent_thread) {
                     // Remove threads created after forwarding.
@@ -126,6 +126,8 @@ class SendReplyToCustomer implements ShouldQueue
         // Conversation history.
         $email_conv_history = config('app.email_conv_history');
 
+        $threads_count = count($this->threads);
+
         $meta_conv_history = $this->last_thread->getMeta(Thread::META_CONVERSATION_HISTORY);
         if (!empty($meta_conv_history)) {
             $email_conv_history = $meta_conv_history;
@@ -171,7 +173,7 @@ class SendReplyToCustomer implements ShouldQueue
             $headers['References'] = '<'.$last_customer_thread->message_id.'>';
         }
 
-        $this->message_id = \App\Misc\Mail::MESSAGE_ID_PREFIX_REPLY_TO_CUSTOMER.'-'.$this->last_thread->id.'-'.md5($this->last_thread->id).'@'.$mailbox->getEmailDomain();
+        $this->message_id = \App\Misc\Mail::MESSAGE_ID_PREFIX_REPLY_TO_CUSTOMER.'-'.$this->last_thread->id.'-'.\MailHelper::getMessageIdHash($this->last_thread->id).'@'.$mailbox->getEmailDomain();
         $headers['Message-ID'] = $this->message_id;
 
         $this->customer_email = $this->conversation->customer_email;
@@ -213,7 +215,7 @@ class SendReplyToCustomer implements ShouldQueue
 
         $headers['X-FreeScout-Mail-Type'] = 'customer.message';
 
-        $reply_mail = new ReplyToCustomer($this->conversation, $this->threads, $headers, $mailbox);
+        $reply_mail = new ReplyToCustomer($this->conversation, $this->threads, $headers, $mailbox, $threads_count);
 
         try {
             Mail::to($to)
@@ -271,11 +273,14 @@ class SendReplyToCustomer implements ShouldQueue
         if ($imap_sent_folder) {
             try {
                 $client = \MailHelper::getMailboxClient($mailbox);
+                
                 $client->connect();
 
                 $envelope['from'] = $mailbox->getMailFrom(null, $this->conversation)['address'];
                 $envelope['to'] = $this->customer_email;
                 $envelope['subject'] = 'Re: ' . $this->conversation->subject;
+                $envelope['date'] = now()->toRfc2822String();
+                $envelope['message_id'] = $this->message_id;
 
                 // Get penultimate email Message-Id if reply
                 if (!$new && !empty($last_customer_thread) && $last_customer_thread->message_id) {
@@ -284,14 +289,28 @@ class SendReplyToCustomer implements ShouldQueue
                         'References: <'.$last_customer_thread->message_id.'>'
                     ];
                 }
+                // Remove new lines to avoid "imap_mail_compose(): header injection attempt in subject".
+                foreach ($envelope as $i => $envelope_value) {
+                    $envelope[$i] = preg_replace("/[\r\n]/", '', $envelope_value);
+                }
 
                 $part1['type'] = TYPETEXT;
                 $part1['subtype'] = 'html';
                 $part1['contents.data'] = $reply_mail->render();
+                $part1['charset'] = 'utf-8';
 
                 try {
+                    // getFolder does not work if sent folder has spaces.
                     $folder = $client->getFolder($imap_sent_folder);
-                    $folder->appendMessage(imap_mail_compose($envelope, [$part1]), '\Seen', now()->format('d-M-Y H:i:s O'));
+                    if ($folder) {
+                        if (get_class($client) == 'Webklex\PHPIMAP\Client') {
+                            $folder->appendMessage(imap_mail_compose($envelope, [$part1]), ['Seen'], now()->format('d-M-Y H:i:s O'));
+                        } else {
+                            $folder->appendMessage(imap_mail_compose($envelope, [$part1]), '\Seen', now()->format('d-M-Y H:i:s O'));
+                        }
+                    } else {
+                        \Log::error('Could not save outgoing reply to the IMAP folder (make sure IMAP folder does not have spaces - folders with spaces do not work): '.$imap_sent_folder);
+                    }
                 } catch (\Exception $e) {
                     // Just log error and continue.
                     \Helper::logException($e, 'Could not save outgoing reply to the IMAP folder, IMAP folder not found: '.$imap_sent_folder.' - ');

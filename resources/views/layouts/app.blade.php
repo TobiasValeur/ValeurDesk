@@ -14,7 +14,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     {{--<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">--}}
-    <link rel="manifest" href="/site.webmanifest">
+    <link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
@@ -40,7 +40,7 @@
 
     @yield('stylesheets')
 </head>
-<body class="locale-{{ app()->getLocale() }} @if (Helper::isLocaleRtl()) rtl @endif @if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" @endif>
+<body class="locale-{{ app()->getLocale() }} @if (Helper::isLocaleRtl()) rtl @endif @if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class') @action('body.class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" @endif>
 <div id="app">
 
         @if (Auth::user() && empty(app('request')->x_embed) && empty($__env->yieldContent('guest_mode')))
@@ -86,7 +86,7 @@
                                     </a>
                                     <ul class="dropdown-menu dm-scrollable">
                                         @foreach ($mailboxes as $mailbox_item)
-                                            <li @if ($mailbox_item->id == app('request')->id)class="active"@endif><a href="{{ \Eventy::filter('mailbox.url', route('mailboxes.view', ['id' => $mailbox_item->id]), $mailbox_item) }}">{{ $mailbox_item->name }}</a></li>
+                                            <li @if ($mailbox_item->id == app('request')->id)class="active"@endif><a href="{{ \Eventy::filter('mailbox.url', route('mailboxes.view', ['id' => $mailbox_item->id]), $mailbox_item) }}">@action('menu.mailbox.before_name', $mailbox_item){{ $mailbox_item->name }}</a></li>
                                         @endforeach
                                     </ul>
                                 </li>
@@ -306,7 +306,7 @@
             @endif
         @endif
         @yield('javascript')
-        @action('javascript')
+        @action('javascript', $__env->yieldContent('javascripts'))
     </script>
 </body>
 </html>

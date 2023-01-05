@@ -1,5 +1,11 @@
 <?php
 
+$key = env('APP_KEY', null);
+$key_file = env("APP_KEY_FILE", null);
+if (empty($key) && !empty($key_file)) {
+    $key = trim(file_get_contents($key_file));
+}
+
 return [
 
     /*
@@ -12,7 +18,7 @@ return [
     | or any other location as required by the application or its packages.
     */
 
-    'version' => '1.8.12',
+    'version' => '1.8.46',
 
     /*
     |--------------------------------------------------------------------------
@@ -92,7 +98,7 @@ return [
     */
 
     'locale'          => env('APP_LOCALE', 'en'),
-    'locales'         => ['en', 'hr', 'da', 'nl', 'fr', 'de', 'ja', 'it', 'fa', 'pl', 'pt-PT', 'pt-BR', 'ru', 'es', 'sk', 'sv'],
+    'locales'         => ['en', 'hr', 'cs', 'da', 'nl', 'fr', 'de', 'it', 'ja', 'ko', 'fa', 'pl', 'pt-PT', 'pt-BR', 'ru', 'es', 'sk', 'sv'],
     'locales_rtl'     => ['fa'],
     'default_locale'  => 'en',
 
@@ -126,7 +132,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY'),
+    'key' => $key,
 
     'cipher' => 'AES-256-CBC',
 
@@ -194,7 +200,7 @@ return [
     | PHP extensions required by the app
     |-------------------------------------------------------------------------
     */
-    'required_extensions' => ['mysql / mysqli', 'mbstring', 'xml', 'imap', /*'mcrypt' mcrypt is deprecated*/ 'json', 'gd', 'fileinfo', 'openssl', 'zip', 'tokenizer', 'curl'/*, 'dom', 'xmlwriter', 'libxml', 'phar'*/],
+    'required_extensions' => ['mysql / mysqli', 'mbstring', 'xml', 'imap', /*'mcrypt' mcrypt is deprecated*/ 'json', 'gd', 'fileinfo', 'openssl', 'zip', 'tokenizer', 'curl', 'iconv'/*, 'dom', 'xmlwriter', 'libxml', 'phar'*/],
 
     /*
     |--------------------------------------------------------------------------
@@ -246,6 +252,7 @@ return [
         'alert_fetch_period' => ['default' => 15], // min
         'email_branding'     => ['default' => true],
         'open_tracking'      => ['default' => true],
+        'subscription_defaults' => ['default' => []],
     ],
 
     /*
@@ -343,6 +350,21 @@ return [
     |--------------------------------------------------------------------------
     */
     'disable_updating'    => env('APP_DISABLE_UPDATING', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Use custom conversation numbers instead of conversation ID.
+    |--------------------------------------------------------------------------
+    */
+    'custom_number' => env('APP_CUSTOM_NUMBER', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enter your proxy address in .env file if freescout.net is not available from your server
+    | (access to freescout.net is required to obtain official modules)
+    |--------------------------------------------------------------------------
+    */
+    'proxy' => env('APP_PROXY', ''),
 
     /*
     |--------------------------------------------------------------------------

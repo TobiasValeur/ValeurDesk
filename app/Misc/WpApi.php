@@ -23,7 +23,6 @@ class WpApi
             return \Config::get('app.freescout_alt_api').$path;
         } else {
             return \Config::get('app.freescout_api').$path;
-            
         }
     }
 
@@ -32,14 +31,23 @@ class WpApi
         $client = new \GuzzleHttp\Client();
 
         if ($method == self::METHOD_POST) {
+            if (strstr($url, '?')) {
+                $url .= '&';
+            } else {
+                $url .= '?';
+            }
+            $url .= 'v='.config('app.version');
             return $client->request('POST', $url, [
                 'connect_timeout' => 10,
                 'form_params' => $params,
+                'proxy' => config('app.proxy'),
             ]);
         } else {
+            $params['v'] = config('app.version');
             return $client->request('GET', $url, [
                 'connect_timeout' => 10,
                 'query' => $params,
+                'proxy' => config('app.proxy'),
             ]);
         }
     }

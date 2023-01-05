@@ -39,16 +39,22 @@ class ReplyToCustomer extends Mailable
     public $mailbox;
 
     /**
+     * Number of threads.
+     */
+    public $threads_count;
+
+    /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($conversation, $threads, $headers, $mailbox)
+    public function __construct($conversation, $threads, $headers, $mailbox, $threads_count = 1)
     {
         $this->conversation = $conversation;
         $this->threads = $threads;
         $this->headers = $headers;
         $this->mailbox = $mailbox;
+        $this->threads_count = $threads_count;
     }
 
     /**
@@ -78,7 +84,7 @@ class ReplyToCustomer extends Mailable
         }
 
         $subject = $this->conversation->subject;
-        if (count($this->threads) > 1) {
+        if ($this->threads_count > 1) {
             $subject = 'Re: '.$subject;
         }
         $subject = \Eventy::filter('email.reply_to_customer.subject', $subject, $this->conversation);
@@ -89,9 +95,15 @@ class ReplyToCustomer extends Mailable
                     ->view('emails/customer/reply_fancy')
                     ->text('emails/customer/reply_fancy_text');
 
-        if ($this->threads->first()->has_attachments) {
-            foreach ($this->threads->first()->attachments as $attachment) {
-                $message->attach($attachment->getLocalFilePath());
+        $thread = $this->threads->first();
+
+        if ($thread->has_attachments) {
+            foreach ($thread->attachments as $attachment) {
+                if ($attachment->fileExists()) {
+                    $message->attach($attachment->getLocalFilePath());
+                } else {
+                    \Log::error('[ReplyToCustomer] Thread: '.$thread->id.'. Attachment file not find on disk: '.$attachment->getLocalFilePath());
+                }
             }
         }
 

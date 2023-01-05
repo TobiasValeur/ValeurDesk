@@ -7,6 +7,7 @@
 namespace App;
 
 use App\Email;
+use App\Follower;
 use App\Mail\PasswordChanged;
 use App\Mail\UserInvite;
 use App\Notifications\WebsiteNotification;
@@ -32,6 +33,10 @@ class User extends Authenticatable
 
     const EMAIL_MAX_LENGTH = 100;
 
+    const EMAIL_DELETED_SUFFIX = '_deleted';
+
+    const DEFAULT_TIMEZONE = 'UTC';
+
     /**
      * Roles.
      */
@@ -47,7 +52,7 @@ class User extends Authenticatable
      * Types.
      */
     const TYPE_USER = 1;
-    const TYPE_TEAM = 2;
+    const TYPE_ROBOT = 2; // Workflows, teams, etc.
 
     /**
      * Statuses.
@@ -112,7 +117,7 @@ class User extends Authenticatable
      *
      * @var [type]
      */
-    protected $fillable = ['role', 'status', 'first_name', 'last_name', 'email', 'password', 'role', 'timezone', 'photo_url', 'type', 'emails', 'job_title', 'phone', 'time_format', 'enable_kb_shortcuts', 'locale'];
+    protected $fillable = ['role', 'status', 'first_name', 'last_name', 'email', 'password', 'timezone', 'photo_url', 'type', 'emails', 'job_title', 'phone', 'time_format', 'enable_kb_shortcuts', 'locale'];
 
     protected $casts = [
         'permissions' => 'array',
@@ -209,7 +214,7 @@ class User extends Authenticatable
      */
     public function getFullName()
     {
-        return $this->first_name.' '.$this->last_name;
+        return \Eventy::filter('user.full_name', $this->first_name.' '.$this->last_name, $this);
     }
 
     /**
@@ -553,7 +558,7 @@ class User extends Authenticatable
     public static function getUserPermissionName($user_permission)
     {
         $user_permission_names = [
-            self::PERM_DELETE_CONVERSATIONS => __('Users are allowed to delete notes/conversations'),
+            self::PERM_DELETE_CONVERSATIONS => __('Users are allowed to delete conversations'),
             self::PERM_EDIT_CONVERSATIONS   => __('Users are allowed to edit notes/replies'),
             self::PERM_EDIT_SAVED_REPLIES   => __('Users are allowed to edit/delete saved replies'),
             self::PERM_EDIT_TAGS            => __('Users are allowed to manage tags'),
@@ -885,10 +890,7 @@ class User extends Authenticatable
             return null;
         }
 
-        $user->fill($data);
-
-        $user->password = \Hash::make($data['password']);
-        $user->email = Email::sanitizeEmail($data['email']);
+        $user->setData($data);
 
         try {
             $user->save();
@@ -897,6 +899,36 @@ class User extends Authenticatable
         }
 
         return $user;
+    }
+
+    /**
+     * Set fields.
+     */
+    public function setData($data, $replace_data = true, $save = false)
+    {
+        if (isset($data['email'])) {
+            $data['email'] = Email::sanitizeEmail($data['email']);
+        }
+        if (isset($data['password'])) {
+            $data['password'] = \Hash::make($data['password']);
+        }
+
+        if ($replace_data) {
+            $this->fill($data);
+        } else {
+            // Update empty fields.
+            foreach ($data as $key => $value) {
+                if (in_array($key, $this->fillable) && empty($this->$key)) {
+                    $this->$key = $value;
+                }
+            }
+        }
+
+        \Eventy::action('user.set_data', $this, $data, $replace_data);
+
+        if ($save) {
+            $this->save();
+        }
     }
 
     /**
@@ -941,12 +973,15 @@ class User extends Authenticatable
 
     /**
      * Get query to fetch non-deleted users.
+     * Some modules may extend this condition, to allow this user $extended parameter.
      *
      * @return [type] [description]
      */
-    public static function nonDeleted()
+    public static function nonDeleted($extended = false)
     {
-        return self::where('status', '!=', self::STATUS_DELETED);
+        $condition = self::where('status', '!=', self::STATUS_DELETED);
+
+        return \Eventy::filter('user.non_deleted_condition', $condition, $extended);
     }
 
     public function isActive()
@@ -1013,9 +1048,9 @@ class User extends Authenticatable
         return md5($this->id.config('app.key'));
     }
 
-    public static function findNonDeleted($id)
+    public static function findNonDeleted($id, $extended = false)
     {
-        return User::nonDeleted()->where('id', $id)->first();
+        return User::nonDeleted($extended)->where('id', $id)->first();
     }
 
     /**
@@ -1046,7 +1081,7 @@ class User extends Authenticatable
         if ($this->email == $email) {
             return true;
         }
-        $alt_emails = explode(',', $this->emails);
+        $alt_emails = explode(',', $this->emails ?? '');
         
         foreach ($alt_emails as $alt_email) {
             if (Email::sanitizeEmail($alt_email) == $email) {
@@ -1070,5 +1105,24 @@ class User extends Authenticatable
         } else {
             return false;
         }
+    }
+
+    public function followConversation($conversation_id)
+    {
+        try {
+            $follower = new Follower();
+            $follower->conversation_id = $conversation_id;
+            $follower->user_id = $this->id;
+            $follower->save();
+        } catch (\Exception $e) {
+            // Already exists
+        }
+    }
+
+    // If there will be some issues, extra "robot" field
+    // may need to be added to Users table.
+    public static function getRobotsCondition()
+    {
+        return User::where('type', User::TYPE_ROBOT);
     }
 }

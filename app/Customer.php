@@ -50,10 +50,10 @@ class Customer extends Model
     public static $phone_types = [
         self::PHONE_TYPE_WORK   => 'work',
         self::PHONE_TYPE_HOME   => 'home',
-        self::PHONE_TYPE_OTHER  => 'other',
         self::PHONE_TYPE_MOBILE => 'mobile',
         self::PHONE_TYPE_FAX    => 'fax',
         self::PHONE_TYPE_PAGER  => 'pager',
+        self::PHONE_TYPE_OTHER  => 'other',
     ];
 
     /**
@@ -490,7 +490,7 @@ class Customer extends Model
      */
     public function getMainEmail()
     {
-        return optional($this->emails_cached()->first())->email;
+        return optional($this->emails_cached()->first())->email.'';
     }
 
     /**
@@ -643,6 +643,17 @@ class Customer extends Model
         }
     }
 
+    public function getMainPhoneValue()
+    {
+        return $this->getMainPhoneNumber();
+    }
+
+    public function getMainPhoneNumber()
+    {
+        $phones = $this->getPhones();
+        return $phones[0]['value'] ?? '';
+    }
+
     /**
      * Set phones as JSON.
      *
@@ -685,12 +696,14 @@ class Customer extends Model
                     $phones[] = [
                         'value' => (string) $phone['value'],
                         'type'  => (int) $phone['type'],
+                        'n'     => (string)\Helper::phoneToNumeric($phone['value']),
                     ];
                 }
             } else {
                 $phones[] = [
                     'value' => (string) $phone,
-                    'type'  => self::PHONE_TYPE_WORK
+                    'type'  => self::PHONE_TYPE_WORK,
+                    'n'     => (string)\Helper::phoneToNumeric($phone),
                 ];
             }
         }
@@ -721,8 +734,16 @@ class Customer extends Model
      */
     public static function findByPhone($phone)
     {
-        $phone = trim($phone);
-        return Customer::where('phones', 'LIKE', '%"'.$phone.'"%')->first();
+        return Customer::byPhone($phone)->first();
+    }
+
+    /**
+     * Get query.
+     */
+    public static function byPhone($phone)
+    {
+        $phone_numeric = \Helper::phoneToNumeric($phone);
+        return Customer::where('phones', 'LIKE', '%"'.$phone_numeric.'"%');
     }
 
     /**
@@ -761,6 +782,12 @@ class Customer extends Model
         } else {
             return [];
         }
+    }
+
+    public function getMainWebsite()
+    {
+        $websites = $this->getWebsites();
+        return $websites[0] ?? '';
     }
 
     /**
@@ -1224,7 +1251,7 @@ class Customer extends Model
                 return '';
             }
         } else {
-            return asset('/img/default-avatar.png');
+            return \Eventy::filter('customer.default_avatar', asset('/img/default-avatar.png'), $this);
         }
     }
 
@@ -1383,5 +1410,33 @@ class Customer extends Model
         $meta = $this->meta;
         $meta[$key] = $value;
         $this->meta = $meta;
+    }
+
+    public static function getPhoneTypeName($code)
+    {
+        $phone_types = [
+            self::PHONE_TYPE_WORK   => __('Work'),
+            self::PHONE_TYPE_HOME   => __('Home'),
+            self::PHONE_TYPE_OTHER  => __('Other'),
+            self::PHONE_TYPE_MOBILE => __('Mobile'),
+            self::PHONE_TYPE_FAX    => __('Fax'),
+            self::PHONE_TYPE_PAGER  => __('Pager'),
+        ];
+
+        return $phone_types[$code] ?? '';
+    }
+
+    public static function isDefaultPhoneType($code)
+    {
+        return (self::PHONE_TYPE_WORK == $code);
+    }
+
+    // Method does not check if the customer
+    // has conversations.
+    public function deleteCustomer()
+    {
+        // Delete emails.
+        Email::where('customer_id', $this->id)->delete();
+        $this->delete();
     }
 }

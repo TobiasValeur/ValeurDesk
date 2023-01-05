@@ -74,7 +74,7 @@ class Module extends Model
 
     public static function isOfficial($author_url)
     {
-        return parse_url($author_url, PHP_URL_HOST) == parse_url(\Config::get('app.freescout_url'), PHP_URL_HOST);
+        return parse_url($author_url ?? '', PHP_URL_HOST) == parse_url(\Config::get('app.freescout_url') ?? '', PHP_URL_HOST);
     }
 
     /**
@@ -231,6 +231,29 @@ class Module extends Model
 
     public static function formatName($name)
     {
-        return preg_replace("/ Module$/", '', $name);
+        return preg_replace("/ Module($|.*\[.*\]$)/", '$1', $name);
+    }
+
+    public static function formatModuleData($module_data)
+    {
+        // Add (Third-Party).
+        if (\App\Module::isOfficial($module_data['authorUrl']) 
+            && $module_data['author'] != 'FreeScout'
+            && mb_substr(trim($module_data['name']), -1)  != ']'
+        ) {
+            $module_data['name'] = $module_data['name'].' ['.__('Third-Party').']';
+        }
+        return $module_data;
+    }
+
+    public static function isThirdParty($module_data)
+    {
+        if (\App\Module::isOfficial($module_data['authorUrl']) 
+            && $module_data['author'] != 'FreeScout'
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

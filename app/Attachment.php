@@ -65,6 +65,8 @@ class Attachment extends Model
         // Replace some symbols in file name.
         // Gmail can not load image if it contains spaces.
         $file_name = preg_replace('/[ #\/]/', '-', $file_name);
+        // Replace soft hyphens.
+        $file_name = str_replace(html_entity_decode('&#xAD;'), '-', $file_name);
 
         if (!$file_name) {
             if (!$orig_extension) {
@@ -77,6 +79,12 @@ class Attachment extends Model
             if ($orig_extension) {
                 $file_name .= '.'.$orig_extension;
             }
+        }
+
+        // https://github.com/freescout-helpdesk/freescout/issues/2385
+        // Fix for webklex/php-imap.
+        if ($file_name == 'undefined' && $mime_type == 'message/rfc822') {
+            $file_name = 'RFC822.eml';
         }
 
         if (strlen($file_name) > 255) {
@@ -287,6 +295,14 @@ class Attachment extends Model
         } else {
             return DIRECTORY_SEPARATOR.'storage'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.self::DIRECTORY.DIRECTORY_SEPARATOR.$this->file_dir.$this->file_name;
         }
+    }
+
+    /**
+     * Check if the attachment file actually exists on the disk.
+     */
+    public function fileExists()
+    {
+        return $this->getDisk()->exists(self::DIRECTORY.DIRECTORY_SEPARATOR.$this->file_dir.$this->file_name);
     }
 
     public static function formatBytes($size, $precision = 0)

@@ -28,6 +28,7 @@ class ModulesController extends Controller
     {
         $installed_modules = [];
         $modules_directory = [];
+        $third_party_modules = [];
         $all_modules = [];
         $flashes = [];
         $updates_available = false;
@@ -54,7 +55,7 @@ class ModulesController extends Controller
         \Module::clearCache();
         $modules = \Module::all();
         foreach ($modules as $module) {
-            $installed_modules[] = [
+            $module_data = [
                 'alias'                        => $module->getAlias(),
                 'name'                         => $module->getName(),
                 'description'                  => $module->getDescription(),
@@ -74,6 +75,8 @@ class ModulesController extends Controller
                 // Determined later
                 'new_version'        => '',
             ];
+            $module_data = \App\Module::formatModuleData($module_data);
+            $installed_modules[] = $module_data;
         }
 
         // No need, as we update modules list on each page load
@@ -85,6 +88,9 @@ class ModulesController extends Controller
         // Prepare directory modules
         if (is_array($modules_directory)) {
             foreach ($modules_directory as $i_dir => $dir_module) {
+
+                $modules_directory[$i_dir] = \App\Module::formatModuleData($dir_module);
+
                 // Remove modules without aliases
                 if (empty($dir_module['alias'])) {
                     unset($modules_directory[$i_dir]);
@@ -117,6 +123,12 @@ class ModulesController extends Controller
                 }
                 $modules_directory[$i_dir]['active'] = \App\Module::isActive($dir_module['alias']);
                 $modules_directory[$i_dir]['activated'] = false;
+
+                // Do not show third-party modules in Modules Derectory.
+                if (\App\Module::isThirdParty($dir_module)) {
+                    $third_party_modules[] = $modules_directory[$i_dir];
+                    unset($modules_directory[$i_dir]);
+                }
             }
         } else {
             $modules_directory = [];
@@ -125,6 +137,7 @@ class ModulesController extends Controller
         return view('modules/modules', [
             'installed_modules' => $installed_modules,
             'modules_directory' => $modules_directory,
+            'third_party_modules' => $third_party_modules,
             'flashes'           => $flashes,
             'updates_available' => $updates_available,
             'all_modules'       => $all_modules,
@@ -281,6 +294,22 @@ class ModulesController extends Controller
                                     $response['msg'] = __('Your domain is deactivated');
                                     break;
                             }
+                        } elseif (!empty($license_result['status']) && $license_result['status'] == 'inactive') {
+                            // Activate the license.
+                            $result = WpApi::activateLicense($params);
+                            if (WpApi::$lastError) {
+                                $response['msg'] = WpApi::$lastError['message'];
+                            } elseif (!empty($result['code']) && !empty($result['message'])) {
+                                $response['msg'] = $result['message'];
+                            } else {
+                                if (!empty($result['status']) && $result['status'] == 'valid') {
+                                    // Success.
+                                } elseif (!empty($result['error'])) {
+                                    $response['msg'] = $this->getErrorMessage($result['error'], $result);
+                                } else {
+                                    // Some unknown error. Do nothing.
+                                }
+                            }
                         }
                     }
                 }
@@ -398,7 +427,7 @@ class ModulesController extends Controller
                     } else {
                         if (!empty($result['status']) && $result['status'] == 'success') {
                             $db_module = \App\Module::getByAlias($alias);
-                            if ($db_module && trim($db_module->license) == trim($license)) {
+                            if ($db_module && trim($db_module->license ?? '') == trim($license ?? '')) {
                                 // Remove remembered license key and deactivate license in DB
                                 \App\Module::deactivateLicense($alias, '');
 

@@ -35,6 +35,18 @@ class SendReplyToCustomer
             return;
         }
 
+        // Remove threads added after this event had fired.
+        $thread = $event->last_thread ?? $event->thread ?? null;
+        if ($thread) {
+            foreach ($replies as $i => $reply) {
+                if ($reply->id == $thread->id) {
+                    break;
+                } else {
+                    $replies->forget($i);
+                }
+            }
+        }
+
         // Chat conversation.
         if ($conversation->isChat()) {
             \Helper::backgroundAction('chat_conversation.send_reply', [$conversation, $replies, $conversation->customer], now()->addSeconds(Conversation::UNDO_TIMOUT));

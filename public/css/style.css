@@ -764,6 +764,18 @@ a h4 {
     line-height: 50px;
     font-size: 18px;
 }
+.card-icon {
+    background-color: #c1cbd4;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    color: #fff;
+    float: left;
+    text-align: center;
+    width: 50px;
+    height: 50px;
+    line-height: 49px;
+    font-size: 18px;
+}
 .person-photo-auto {
     float: left;
     line-height: 11px;
@@ -1362,6 +1374,9 @@ thead .conv-cb label {
     vertical-align: middle;
     border-bottom: 1px solid #e3e8eb;
 }
+.table.table-conversations tbody .conv-row-extended td {
+    border-bottom: 0!important;
+}
 .table-conversations td a {
     color: #2a3b47;
     display: block;
@@ -1821,6 +1836,12 @@ button.conv-checkbox-clear {
 }
 .conv-subj-block {
     padding: 16px 9px 18px 20px;
+}
+.conv-following .conv-subjtext > span:before {
+    content: "🔔 ";
+    font-size: 15px;
+    position: relative;
+    top: -3px;
 }
 .conv-top-block {
     border-top: 1px solid #e3e8eb;
@@ -2314,9 +2335,6 @@ button.conv-checkbox-clear {
     color: #93a1af;
     text-decoration: none;
     cursor: default;
- }
-.thread-attachments span {
-    text-transform: lowercase;
 }
 .thread-editor-container {
     padding: 20px;
@@ -2734,7 +2752,7 @@ ul.sidebar-block-list {
         width: 100%;
         padding-right: 0;
         position: static;
-        background-color: #fff;
+        /*background-color: #fff;*/
         height: auto;
     }
     #conv-layout-customer {
@@ -2892,9 +2910,7 @@ ul.sidebar-block-list {
 /**
  * Subscriptions
  */
-.subscriptions-email,
-.subscriptions-browser,
-.subscriptions-mobile {
+.subs-cb {
     text-align: center;
 }
 .user-subscriptions {
@@ -3684,6 +3700,9 @@ body.print {
 .padding-left-0 {
     padding-left: 0 !important;
 }
+.padding-right-0 {
+    padding-right: 0 !important;
+}
 .heading {
     color: #253540;
     font-size: 20px;
@@ -4300,6 +4319,9 @@ a.disabled:focus {
     line-height: 14px;
     margin: 0 4px 0 0;
 }
+.fs-tag a {
+    color: #fff!important;
+}
 .fs-tag-name,
 .fs-tag-name:hover,
 .fs-tag-name:focus {
@@ -4365,6 +4387,11 @@ a.disabled:focus {
 @media (max-width:991px) {
     .col1-hidden {
         display: none;
+    }
+}
+@media (min-width:992px) {
+    .sidebar-2col {
+        overflow-y: auto;
     }
 }
 /**

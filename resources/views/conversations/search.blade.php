@@ -50,6 +50,7 @@
 		            <label>{{ __('Assigned') }} <b class="remove" data-toggle="tooltip" title="{{ __('Remove filter') }}">×</b></label>
 		            <select name="f[assigned]" class="form-control" @if (empty($filters['assigned'])) disabled @endif>
 		            	<option value=""></option>
+						<option value="{{ App\Conversation::USER_UNASSIGNED }}" @if (!empty($filters['assigned']) && $filters['assigned'] == App\Conversation::USER_UNASSIGNED)selected="selected"@endif>{{ __('Unassigned') }}</option>
                         @foreach ($users as $user)
                             <option value="{{ $user->id }}" @if (!empty($filters['assigned']) && $filters['assigned'] == $user->id)selected="selected"@endif>{{ $user->getFullName() }}</option>
                         @endforeach
@@ -69,8 +70,8 @@
 		            <label>{{ __('Mailbox') }} <b class="remove" data-toggle="tooltip" title="{{ __('Remove filter') }}">×</b></label>
 		            <select name="f[mailbox]" class="form-control" @if (empty($filters['mailbox'])) disabled @endif>
 		            	<option value=""></option>
-                        @foreach ($mailboxes as $mailbox)
-                            <option value="{{ $mailbox->id }}" @if (!empty($filters['mailbox']) && $filters['mailbox'] == $mailbox->id)selected="selected"@endif>{{ $mailbox->name }}</option>
+                        @foreach ($mailboxes as $mailbox_item)
+                            <option value="{{ $mailbox_item->id }}" @if (!empty($filters['mailbox']) && $filters['mailbox'] == $mailbox_item->id)selected="selected"@endif>{{ $mailbox_item->name }}</option>
                         @endforeach
                     </select>
 		        </div>
@@ -160,7 +161,7 @@
 		    <li @if ($mode == App\Conversation::SEARCH_MODE_CUSTOMERS)class="active"@endif><a href="{{ \Helper::fixProtocol(request()->fullUrlWithQuery(['mode' => App\Conversation::SEARCH_MODE_CUSTOMERS])) }}">{{ __('Customers') }} <b>({{ $customers->total() }})</b></a></li>
 		</ul>
 		@if ($mode == App\Conversation::SEARCH_MODE_CONV)
-	    	@include('conversations/conversations_table', ['params' => ['target_blank' => true, 'show_mailbox' => (count(Auth::user()->mailboxesCanView(true)) > 1)]])
+	    	@include('conversations/conversations_table', ['mailbox' => $search_mailbox, 'params' => ['target_blank' => true, 'show_mailbox' => (count(Auth::user()->mailboxesCanView(true)) > 1)]])
 	    @else
 	    	@include('customers/partials/customers_table')
 	    @endif
